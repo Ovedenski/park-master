@@ -5,4 +5,4 @@ export default function RootLayout({ children }) {
     </html>
   )
 }
-// Testing git commits
+// Testing git commits and pulls
