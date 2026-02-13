@@ -2,6 +2,7 @@ import "./globals.css";
 import { ThemeProvider } from "./components/theme-provider";
 import ThemeToggle from "@/components/theme-toggle";
 import NavbarMenu from "@/components/navbar";
+import { Footer } from "./components/footer";
 
 export default function RootLayout({ children }) {
   return (
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
         >
           <NavbarMenu />
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
