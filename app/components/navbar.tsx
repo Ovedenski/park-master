@@ -29,13 +29,12 @@
 //   );
 // }
 
+"use client";
 
-"use client"
-
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Menu } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import ThemeToggle from "./theme-toggle";
 import {
   Sheet,
@@ -46,30 +45,35 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 export default function NavbarMenu() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const isActive = (href: string) => pathname === href
+  const isActive = (href: string) => pathname === href;
 
   const linkStyles = (href: string) =>
     cn(
       "relative text-sm font-medium transition-colors",
       "hover:text-primary",
-      isActive(href) && "text-primary"
-    )
+      isActive(href) && "text-primary",
+    );
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-around">
-
         {/* LEFT (Desktop) */}
         <div className="hidden md:flex gap-8">
-          <NavLink href="/" active={isActive("/")}>Home</NavLink>
-          <NavLink href="/about" active={isActive("/about")}>About</NavLink>
-          <NavLink href="/contact" active={isActive("/contact")}>Contact</NavLink>
+          <NavLink href="/" active={isActive("/")}>
+            Home
+          </NavLink>
+          <NavLink href="/about" active={isActive("/about")}>
+            About
+          </NavLink>
+          <NavLink href="/contact" active={isActive("/contact")}>
+            Contact
+          </NavLink>
         </div>
 
         {/* CENTER LOGO */}
@@ -95,11 +99,10 @@ export default function NavbarMenu() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-
-            <SheetContent side="right">
+            <SheetContent side="right" className="bg-black">
               <SheetTitle></SheetTitle>
               <SheetDescription></SheetDescription>
-              <div className="flex flex-col gap-6 mt-10 text-lg font-medium">
+              <div className="flex flex-col gap-6 mt-10 ml-2 text-lg font-medium">
                 <Link href="/">Home</Link>
                 <Link href="/about">About</Link>
                 <Link href="/contact">Contact</Link>
@@ -109,10 +112,9 @@ export default function NavbarMenu() {
             </SheetContent>
           </Sheet>
         </div>
-
       </div>
     </nav>
-  )
+  );
 }
 
 function NavLink({
@@ -120,16 +122,16 @@ function NavLink({
   active,
   children,
 }: {
-  href: string
-  active: boolean
-  children: React.ReactNode
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
       className={cn(
         "relative text-sm font-medium transition-colors hover:text-primary",
-        active && "text-primary"
+        active && "text-primary",
       )}
     >
       {children}
@@ -139,9 +141,9 @@ function NavLink({
         className={cn(
           "absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 bg-primary transition-transform duration-300",
           active && "scale-x-100",
-          "group-hover:scale-x-100"
+          "group-hover:scale-x-100",
         )}
       />
     </Link>
-  )
+  );
 }
