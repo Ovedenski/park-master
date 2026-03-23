@@ -27,3 +27,42 @@
 body {
   font-family: var(--font-display);
 }
+
+
+/* 
+Бележки:
+
+Стил глобален:
+Page title → text-4xl or text-5xl
+
+Section title → text-3xl
+
+Card title → text-xl
+
+Body text → text-muted-foreground
+
+Containers → max-w-6xl 
+
+За базата записки:
+
+Phase 3 – Add Authentication
+
+Then integrate:
+
+next-auth
+
+Clerk
+
+Supabase Auth
+
+Now users can:
+
+Sign up
+
+Create listings tied to their ID
+
+View their listings
+
+Edit/delete their listings
+
+Now auth makes sense.*/

@@ -78,7 +78,7 @@ export default function NavbarMenu() {
 
         {/* CENTER LOGO */}
         <div className="absolute left-1/2 -translate-x-1/2 text-lg font-bold">
-          <Link href="/">ParkingApp</Link>
+          <Link href="/">ParkMaster</Link>
         </div>
 
         {/* RIGHT (Desktop) */}
@@ -88,6 +88,9 @@ export default function NavbarMenu() {
           </NavLink>
           <NavLink href="/parking-spots" active={isActive("/parking-spots")}>
             Паркоместа
+          </NavLink>
+          <NavLink href="/parking-spots" active={isActive("/parking-spots")}>
+            Вход
           </NavLink>
         </div>
 
