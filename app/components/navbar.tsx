@@ -139,7 +139,7 @@ function NavLink({
       {/* Hover + Active underline */}
       <span
         className={cn(
-          "absolute -bottom-1 left-0 h-[2px] w-full origin-left scale-x-0 bg-primary transition-transform duration-300",
+          "absolute -bottom-1 left-0 h-2px w-full origin-left scale-x-0 bg-primary transition-transform duration-300",
           active && "scale-x-100",
           "group-hover:scale-x-100",
         )}
