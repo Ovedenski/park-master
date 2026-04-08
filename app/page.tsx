@@ -24,7 +24,7 @@ export default function HomePage() {
           </p>
 
           <div className="mt-8 flex justify-center gap-4">
-            <Link href="/create">
+            <Link href="/list-spot">
               <Button size="lg">List Your Spot</Button>
             </Link>
 

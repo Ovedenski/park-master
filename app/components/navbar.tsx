@@ -83,15 +83,17 @@ export default function NavbarMenu() {
 
         {/* RIGHT (Desktop) */}
         <div className="hidden md:flex gap-8">
-          <NavLink href="/garages" active={isActive("/garages")}>
-            Гаражи
+          <NavLink href="/listings" active={isActive("/listings")}>
+            Всички обяви
           </NavLink>
-          <NavLink href="/parking-spots" active={isActive("/parking-spots")}>
-            Паркоместа
+          <NavLink href="/list-spot" active={isActive("/list-spot")}>
+            Качи обява
           </NavLink>
-          <NavLink href="/parking-spots" active={isActive("/parking-spots")}>
+          <NavLink href="/login" active={isActive("/login")}>
             Вход
           </NavLink>
+
+         <ThemeToggle/>
         </div>
 
         {/* MOBILE */}

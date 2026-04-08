@@ -65,4 +65,25 @@ View their listings
 
 Edit/delete their listings
 
-Now auth makes sense.*/
+Now auth makes sense.
+
+Best build order
+The clean continuation order for your app is:
+
+Finish homepage polish.
+
+Finalize navbar category architecture.
+
+Build reusable listings grid.
+
+Add category filter UI.
+
+Build listing detail page.
+
+Build create-listing page.
+
+Add database.
+
+Add auth.
+
+*/
