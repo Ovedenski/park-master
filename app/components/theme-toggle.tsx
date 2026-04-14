@@ -12,18 +12,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function ThemeToggle() {
+  const [mounted, setMounted] = React.useState(false)
   const { setTheme } = useTheme();
   
+React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
-  return (
+  if (!mounted) {
+    return (
+      <Button variant="outline" size="icon" disabled aria-label="Toggle theme">
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+      </Button>
+    )
+  }
+
+ return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" aria-label="Toggle theme">
           <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
           <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
@@ -36,5 +49,5 @@ export default function ThemeToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
