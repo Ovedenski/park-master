@@ -1,46 +1,70 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ChevronDown, Menu } from "lucide-react"
+import * as React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ChevronDown, Menu } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import ThemeToggle from "./theme-toggle"
+import { Button } from "@/components/ui/button";
+import ThemeToggle from "./theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
   SheetContent,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
-import { categories } from "@/lib/categories"
+} from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { categories } from "@/lib/categories";
 
 const leftLinks = [
   { href: "/", label: "Home" },
   { href: "/#about", label: "About" },
   { href: "/#contact", label: "Contact" },
-]
+];
 
-const rightLinks = [
-  { href: "/account", label: "Account" },
-]
+const rightLinks = [{ href: "/account", label: "Account" }];
 
 export default function NavbarMenu() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const [hash, setHash] = React.useState("");
+
+  React.useEffect(() => {
+    const updateHash = () => {
+      setHash(window.location.hash);
+    };
+
+    updateHash();
+    window.addEventListener("hashchange", updateHash);
+
+    return () => {
+      window.removeEventListener("hashchange", updateHash);
+    };
+  }, []);
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/"
-    if (href.startsWith("/#")) return pathname === "/"
-    return pathname.startsWith(href)
-  }
+    if (href === "/") {
+      return pathname === "/" && hash === "";
+    }
+
+    if (href.startsWith("/#")) {
+      return pathname === "/" && hash === href.replace("/", "");
+    }
+
+    return href === "/" ? pathname === "/" : pathname.startsWith(href);
+  };
+
+  // const isActive = (href: string) => {
+  //   if (href === "/") return pathname === "/"
+  //   if (href.startsWith("/#")) return pathname === "/"
+  //   return pathname.startsWith(href)
+  // }
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
@@ -53,7 +77,12 @@ export default function NavbarMenu() {
         {/* Left desktop */}
         <div className="hidden min-w-0 flex-1 items-center gap-6 md:flex">
           {leftLinks.map((link) => (
-            <NavLink key={link.href} href={link.href} active={isActive(link.href)}>
+            <NavLink
+              key={link.href}
+              href={link.href}
+              active={false}
+              //active={isActive(link.href)}
+            >
               {link.label}
             </NavLink>
           ))}
@@ -78,7 +107,11 @@ export default function NavbarMenu() {
           </Button>
 
           {rightLinks.map((link) => (
-            <NavLink key={link.href} href={link.href} active={isActive(link.href)}>
+            <NavLink
+              key={link.href}
+              href={link.href}
+              active={isActive(link.href)}
+            >
               {link.label}
             </NavLink>
           ))}
@@ -92,7 +125,7 @@ export default function NavbarMenu() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
 function BrowseDropdown() {
@@ -117,15 +150,15 @@ function BrowseDropdown() {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 function MobileMenu({ pathname }: { pathname: string }) {
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/"
-    if (href.startsWith("/#")) return pathname === "/"
-    return pathname.startsWith(href)
-  }
+    if (href === "/") return pathname === "/";
+    if (href.startsWith("/#")) return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   return (
     <Sheet>
@@ -145,7 +178,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
                 href={link.href}
                 className={cn(
                   "rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary",
-                  isActive(link.href) && "bg-muted text-primary"
+                  isActive(link.href) && "bg-muted text-primary",
                 )}
               >
                 {link.label}
@@ -158,7 +191,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
               href="/listings"
               className={cn(
                 "rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary",
-                pathname.startsWith("/listings") && "bg-muted text-primary"
+                pathname.startsWith("/listings") && "bg-muted text-primary",
               )}
             >
               Browse
@@ -183,7 +216,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
               href="/account"
               className={cn(
                 "rounded-md px-3 py-2 text-base font-medium transition-colors hover:bg-muted hover:text-primary",
-                pathname.startsWith("/account") && "bg-muted text-primary"
+                pathname.startsWith("/account") && "bg-muted text-primary",
               )}
             >
               Account
@@ -200,7 +233,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
         </div>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
 function NavLink({
@@ -208,16 +241,16 @@ function NavLink({
   active,
   children,
 }: {
-  href: string
-  active: boolean
-  children: React.ReactNode
+  href: string;
+  active: boolean;
+  children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
       className={cn(
         "group relative text-sm font-medium transition-colors hover:text-primary",
-        active && "text-primary"
+        active && "text-primary",
       )}
     >
       {children}
@@ -225,9 +258,9 @@ function NavLink({
         className={cn(
           "absolute -bottom-1 left-0 h-0.5 w-full origin-left scale-x-0 bg-primary transition-transform duration-300",
           active && "scale-x-100",
-          "group-hover:scale-x-100"
+          "group-hover:scale-x-100",
         )}
       />
     </Link>
-  )
+  );
 }
