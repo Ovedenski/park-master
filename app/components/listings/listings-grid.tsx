@@ -13,7 +13,7 @@ interface ListingsGridProps {
   listings: Listing[]
 }
 
-export function ListingsGrid({ listings }: ListingsGridProps) {
+export default function ListingsGrid({ listings }: ListingsGridProps) {
   if (listings.length === 0) {
     return (
       <div className="py-20 text-center">

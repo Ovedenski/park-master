@@ -1,22 +1,46 @@
-import { Container } from "@/components/layout/container"
-import { ListingsGrid } from "@/components/listings/listings-grid"
+// app/listings/page.tsx
+import ListingsGrid from "@/components/listings/listings-grid"
 import { mockListings } from "@/lib/mock-listings"
 
-export default function ListingsPage() {
+type Listing = {
+  id: string
+  title: string
+  category: string
+  location: string
+  price: number
+  image: string
+}
+
+const ALL_LISTINGS: Listing[] = [...mockListings]
+
+type ListingsPageProps = {
+  searchParams: Promise<{
+    category?: string
+  }>
+}
+
+export default async function ListingsPage({ searchParams }: ListingsPageProps) {
+  const { category } = await searchParams
+
+  const filteredListings =
+    category && category !== "all"
+      ? ALL_LISTINGS.filter((listing) => listing.category === category)
+      : ALL_LISTINGS
+
   return (
-    <main className="py-20">
-      <Container>
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold tracking-tight">
-            All Listings
+    <main className="px-6 py-10">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div>
+          <p className="text-sm text-neutral-500">Listings</p>
+          <h1 className="text-3xl font-semibold">
+            {category && category !== "all"
+              ? `Category: ${category}`
+              : "All listings"}
           </h1>
-          <p className="mt-3 text-muted-foreground">
-            Browse all available parking spaces.
-          </p>
         </div>
 
-        <ListingsGrid listings={mockListings} />
-      </Container>
+        <ListingsGrid listings={filteredListings} />
+      </div>
     </main>
   )
 }

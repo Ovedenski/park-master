@@ -1,3 +1,4 @@
+import { ListIcon } from "lucide-react"
 import Link from "next/link"
 
 interface ListingCardProps {
@@ -14,7 +15,7 @@ interface ListingCardProps {
 export function ListingCard({ listing }: ListingCardProps) {
   return (
     <Link
-      href={`/listings/${listing.category}/${listing.id}`}
+      href={`/listings/${listing.id}`}
       className="group overflow-hidden rounded-2xl border bg-background transition hover:shadow-md"
     >
       <div className="aspect-[4/3] overflow-hidden">

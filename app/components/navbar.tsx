@@ -145,7 +145,8 @@ function BrowseDropdown() {
 
         {categories.map((category) => (
           <DropdownMenuItem asChild key={category.slug}>
-            <Link href={`/listings/${category.slug}`}>{category.label}</Link>
+            <Link href={`/listings?category=${category.slug}`}>{category.label}</Link>
+            {/* <Link href={`/listings/${category.slug}`}>{category.label}</Link> */}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
@@ -202,11 +203,17 @@ function MobileMenu({ pathname }: { pathname: string }) {
             {categories.map((category) => (
               <SheetClose asChild key={category.slug}>
                 <Link
+                    href={`/listings?category=${category.slug}`}
+                    className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                  >
+                    {category.label}
+                  </Link>
+                {/* <Link
                   href={`/listings/${category.slug}`}
                   className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
                 >
                   {category.label}
-                </Link>
+                </Link> */}
               </SheetClose>
             ))}
           </div>
