@@ -1,15 +1,10 @@
-import { ListIcon } from "lucide-react"
-import Link from "next/link"
+import { ListIcon } from "lucide-react";
+import Link from "next/link";
+import type { Listing } from "@/lib/types";
+import { List } from "postcss/lib/list";
 
 interface ListingCardProps {
-  listing: {
-    id: string
-    title: string
-    category: string
-    location: string
-    price: number
-    image: string
-  }
+  listing: Listing;
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
@@ -27,13 +22,9 @@ export function ListingCard({ listing }: ListingCardProps) {
       </div>
 
       <div className="p-4">
-        <h3 className="text-lg font-semibold line-clamp-1">
-          {listing.title}
-        </h3>
+        <h3 className="text-lg font-semibold line-clamp-1">{listing.title}</h3>
 
-        <p className="mt-1 text-sm text-muted-foreground">
-          {listing.location}
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">{listing.location}</p>
 
         <p className="mt-4 text-sm font-medium">
           €{listing.price}
@@ -41,5 +32,5 @@ export function ListingCard({ listing }: ListingCardProps) {
         </p>
       </div>
     </Link>
-  )
+  );
 }

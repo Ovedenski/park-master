@@ -1,16 +1,8 @@
-import { ListingCard } from "@/components/listings/listing-card"
-
-interface Listing {
-  id: string
-  title: string
-  category: string
-  location: string
-  price: number
-  image: string
-}
+import { ListingCard } from "@/components/listings/listing-card";
+import type { Listing } from "@/lib/types";
 
 interface ListingsGridProps {
-  listings: Listing[]
+  listings: Listing[];
 }
 
 export default function ListingsGrid({ listings }: ListingsGridProps) {
@@ -22,7 +14,7 @@ export default function ListingsGrid({ listings }: ListingsGridProps) {
           Try another category or come back later.
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -31,5 +23,5 @@ export default function ListingsGrid({ listings }: ListingsGridProps) {
         <ListingCard key={listing.id} listing={listing} />
       ))}
     </div>
-  )
+  );
 }
