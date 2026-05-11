@@ -1,44 +1,28 @@
 import "server-only"
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 
-export type ListingStatus = "active" | "draft" | "booked"
+export async function getMyListings() {
+  const supabase = await createClient()
 
-export type Listing = {
-  id: string
-  title: string
-  category: string
-  location: string
-  price: number
-  image?: string
-  status: ListingStatus
-}
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
 
-const mockListings: Listing[] = [
-  {
-    id: "1",
-    title: "Sea View Loft",
-    category: "Apartments",
-    location: "Varna, Bulgaria",
-    price: 145,
-    status: "active",
-  },
-  {
-    id: "2",
-    title: "Mountain Cabin Retreat",
-    category: "Cabins",
-    location: "Bansko, Bulgaria",
-    price: 190,
-    status: "draft",
-  },
-  {
-    id: "3",
-    title: "City Studio Escape",
-    category: "Studios",
-    location: "Sofia, Bulgaria",
-    price: 90,
-    status: "booked",
-  },
-]
+  if (userError || !user) {
+    redirect("/login?message=Please log in to view your listings")
+  }
 
-export async function getMyListings(): Promise<Listing[]> {
-  return mockListings
+  const { data, error } = await supabase
+    .from("listings")
+    .select("*")
+    .eq("host_id", user.id)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return data ?? []
 }

@@ -26,6 +26,16 @@ export default function AccountSidebar() {
           </AccountNavLink>
         ))}
       </nav>
+        <div className="mt-6 border-t border-border pt-4">
+        <form action="/auth/signout" method="post">
+          <button
+            type="submit"
+            className="w-full rounded-2xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-muted"
+          >
+            Sign out
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

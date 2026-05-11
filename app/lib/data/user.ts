@@ -1,25 +1,41 @@
-export type UserProfile = {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  bio: string
-  country: string
-  city: string
-  address: string
-}
+import "server-only"
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
 
-const mockUser: UserProfile = {
-  firstName: "Martin",
-  lastName: "Dimitrov",
-  email: "martin@example.com",
-  phone: "+359 88 123 4567",
-  bio: "Host and traveler who enjoys clean spaces, good design, and smooth guest experiences.",
-  country: "Bulgaria",
-  city: "Sofia",
-  address: "15 Vitosha Blvd",
-}
+export async function getCurrentUser() {
+  const supabase = await createClient()
 
-export async function getCurrentUser(): Promise<UserProfile> {
-  return mockUser
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    redirect("/login?message=Please log in to view your profile")
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single()
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return {
+    id: user.id,
+    email: user.email ?? profile.email ?? "",
+    firstName: profile.first_name ?? "",
+    lastName: profile.last_name ?? "",
+    phone: profile.phone ?? "",
+    bio: profile.bio ?? "",
+    country: profile.country ?? "",
+    city: profile.city ?? "",
+    address: profile.address ?? "",
+    bookingNotifications: profile.booking_notifications ?? true,
+    marketingEmails: profile.marketing_emails ?? false,
+    avatarUrl: profile.avatar_url ?? "",
+  }
 }
