@@ -1,8 +1,10 @@
 import "server-only"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
+import type { MyListing } from "@/lib/types"
+import { getListingImageUrl } from "@/lib/listings/storage"
 
-export async function getMyListings() {
+export async function getMyListings(): Promise<MyListing[]> {
   const supabase = await createClient()
 
   const {
@@ -24,5 +26,29 @@ export async function getMyListings() {
     throw new Error(error.message)
   }
 
-  return data ?? []
+  return (data ?? []).map((listing) => ({
+    ...listing,
+    available_days: listing.available_days ?? [],
+    image_url: getListingImageUrl(supabase, listing.image_path),
+  }))
+}
+
+export async function getAllListings(): Promise<MyListing[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("listings")
+    .select("*")
+    .neq("status", "draft")
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    throw new Error(error.message)
+  }
+
+  return (data ?? []).map((listing) => ({
+    ...listing,
+    available_days: listing.available_days ?? [],
+    image_url: getListingImageUrl(supabase, listing.image_path),
+  }))
 }

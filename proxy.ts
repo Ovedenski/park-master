@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -41,10 +41,23 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser()
 
   const path = request.nextUrl.pathname
-  const isAccountRoute = path === "/account" || path.startsWith("/account/")
+  //const isAccountRoute = path === "/account" || path.startsWith("/account/")
   const isAuthPage = path === "/login" || path === "/register"
 
-  if (!user && isAccountRoute) {
+  const protectedRoutes = [
+    "/account",
+    "/dashboard",
+    "/settings",
+    "/favorites",
+    "/list-spot",
+  ]
+
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => path === route || path.startsWith(`${route}/`)
+  )
+  
+
+  if (!user && isProtectedRoute) {
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
@@ -56,5 +69,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account", "/account/:path*", "/login", "/register"],
+  matcher: ["/account", "/account/:path*", "/login", "/register", "/list-spot"],
 }

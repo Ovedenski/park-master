@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { mockListings } from "@/lib/mock-listings";
-import type { Listing } from "@/lib/types";
+import type { Listing, MyListing } from "@/lib/types";
+import { getAllListings } from "@/lib/data/listings";
 
 type ListingPageProps = {
   params: Promise<{
@@ -10,8 +11,9 @@ type ListingPageProps = {
 
 export default async function ListingPage({ params }: ListingPageProps) {
   const { id } = await params;
+  const listings = await getAllListings()
 
-  const listingData: Listing | undefined = mockListings.find(
+  const listingData: MyListing | undefined = listings.find(
     (listing) => listing.id === id,
   );
 
@@ -29,7 +31,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
         </div>
 
         <img
-          src={listingData.image}
+          src={listingData.image_url}
           alt={listingData.title}
           className="h-[420px] w-full rounded-2xl object-cover"
         />
@@ -47,7 +49,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
 
           <div>
             <p className="text-sm text-neutral-500">Price</p>
-            <p className="font-medium">${listingData.price}</p>
+            <p className="font-medium">${listingData.price_per_hour}</p>
           </div>
         </div>
       </div>

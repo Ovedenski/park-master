@@ -1,10 +1,10 @@
 import { ListIcon } from "lucide-react";
 import Link from "next/link";
-import type { Listing } from "@/lib/types";
+import type { Listing, MyListing } from "@/lib/types";
 import { List } from "postcss/lib/list";
 
 interface ListingCardProps {
-  listing: Listing;
+  listing: MyListing;
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
@@ -15,7 +15,7 @@ export function ListingCard({ listing }: ListingCardProps) {
     >
       <div className="aspect-[4/3] overflow-hidden">
         <img
-          src={listing.image}
+          src={listing. image_url}
           alt={listing.title}
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
@@ -27,7 +27,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         <p className="mt-1 text-sm text-muted-foreground">{listing.location}</p>
 
         <p className="mt-4 text-sm font-medium">
-          €{listing.price}
+          €{listing.price_per_hour}
           <span className="text-muted-foreground font-normal"> / rate</span>
         </p>
       </div>

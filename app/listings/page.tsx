@@ -1,9 +1,11 @@
 // app/listings/page.tsx
 import ListingsGrid from "@/components/listings/listings-grid";
 import { mockListings } from "@/lib/mock-listings";
-import type { Listing } from "@/lib/types";
+import type { Listing, MyListing } from "@/lib/types";
+import { getAllListings } from "@/lib/data/listings"
 
-const ALL_LISTINGS: Listing[] = [...mockListings];
+const myListings = await getAllListings()
+
 
 type ListingsPageProps = {
   searchParams: Promise<{
@@ -18,8 +20,8 @@ export default async function ListingsPage({
 
   const filteredListings =
     category && category !== "all"
-      ? ALL_LISTINGS.filter((listing) => listing.category === category)
-      : ALL_LISTINGS;
+      ? myListings.filter((listing) => listing.category === category)
+      : myListings;
 
   return (
     <main className="px-6 py-10">
