@@ -201,9 +201,9 @@ export default function ListingForm({
             onChange={(event) => setPricingMode(event.target.value as PricingMode)}
             className="w-full rounded-md border px-3 py-2"
           >
-            <option value="hourly">Hourly only</option>
-            <option value="monthly">Monthly only</option>
-            <option value="both">Hourly and monthly</option>
+            <option value="hourly">Hourly</option>
+            <option value="monthly">Monthly</option>
+            {/* <option value="both">Hourly and monthly</option> */}
           </select>
         </div>
 

@@ -39,7 +39,7 @@ export async function getAllListings(): Promise<MyListing[]> {
   const { data, error } = await supabase
     .from("listings")
     .select("*")
-    .neq("status", "draft")
+    .eq("status", "active")
     .order("created_at", { ascending: false })
 
   if (error) {

@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server"
 import { parseListingFormData } from "@/lib/listings/form"
 import { uploadListingImage } from "@/lib/listings/storage"
 import type { ListingFormState } from "@/lib/types"
+import { revalidatePath } from "next/cache"
+
 
 export async function createSpot(
   prevState: ListingFormState,
@@ -65,6 +67,6 @@ export async function createSpot(
       values: parsed.values,
     }
   }
-
+  revalidatePath("/listings");
   redirect("/account/listings")
 }

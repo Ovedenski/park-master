@@ -87,7 +87,9 @@ export async function updateListing(
     }
   }
 
+  revalidatePath("/listings");
   redirect("/account/listings")
+  
 }
 
 export async function deleteListing(listingId: string, imagePath: string | null) {
@@ -117,4 +119,6 @@ export async function deleteListing(listingId: string, imagePath: string | null)
   }
 
   revalidatePath("/account/listings")
+  revalidatePath("/listings");
+
 }

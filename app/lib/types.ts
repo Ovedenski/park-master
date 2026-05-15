@@ -76,8 +76,8 @@ export type ListingFormState = {
 
 export type ListingCategory = "residential" | "commercial" | "public"
 
-export const LISTING_CATEGORIES: { value: ListingCategory; label: string }[] = [
-  { value: "residential", label: "Residential" },
-  { value: "commercial", label: "Commercial" },
-  { value: "public", label: "Public" },
+export const LISTING_CATEGORIES: { value: ListingCategory; label: string; slug: string }[] = [
+  { value: "residential", label: "Residential", slug: "residential" },
+  { value: "commercial", label: "Commercial", slug: "commercial" },
+  { value: "public", label: "Public", slug: "public" },
 ]

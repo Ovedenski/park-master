@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { categories } from "@/lib/categories";
+import { LISTING_CATEGORIES } from "@/lib/types";
 
 const leftLinks = [
   { href: "/", label: "Home" },
@@ -143,7 +144,7 @@ function BrowseDropdown() {
           <Link href="/listings">All listings</Link>
         </DropdownMenuItem>
 
-        {categories.map((category) => (
+        {LISTING_CATEGORIES.map((category) => (
           <DropdownMenuItem asChild key={category.slug}>
             <Link href={`/listings?category=${category.slug}`}>{category.label}</Link>
             {/* <Link href={`/listings/${category.slug}`}>{category.label}</Link> */}
@@ -200,7 +201,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
           </SheetClose>
 
           <div className="mt-2 space-y-1 pl-3">
-            {categories.map((category) => (
+            {LISTING_CATEGORIES.map((category) => (
               <SheetClose asChild key={category.slug}>
                 <Link
                     href={`/listings?category=${category.slug}`}
