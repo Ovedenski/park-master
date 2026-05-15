@@ -29,6 +29,7 @@ export function parseListingFormData(formData: FormData) {
     description: getString(formData, "description"),
     category: getString(formData, "category"),
     location: getString(formData, "location"),
+    address: getString(formData, "address"),
     latitude: getString(formData, "latitude"),
     longitude: getString(formData, "longitude"),
     pricing_mode: (getString(formData, "pricing_mode") || "hourly") as PricingMode,
@@ -54,6 +55,10 @@ export function parseListingFormData(formData: FormData) {
 
   if (!values.location) {
     fieldErrors.location = "Location is required."
+  }
+
+  if (!values.address) {
+    fieldErrors.address = "Please select an address.";
   }
 
   const latitude = getOptionalNumber(values.latitude, "latitude", fieldErrors)
@@ -118,6 +123,7 @@ export function parseListingFormData(formData: FormData) {
       description: values.description || null,
       category: values.category as ListingCategory,
       location: values.location,
+      address: values.address,
       latitude,
       longitude,
       pricing_mode: values.pricing_mode,

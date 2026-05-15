@@ -7,6 +7,7 @@ import type {
   PricingMode,
 } from "@/lib/types"
 import { LISTING_CATEGORIES } from "@/lib/types"
+import AddressPicker from "@/components/listings/address-picker";
 
 type ListingFormProps = {
   action: (
@@ -55,7 +56,10 @@ export default function ListingForm({
   const showMonthlyFields = pricingMode === "monthly" || pricingMode === "both"
 
   return (
-    <form action={formAction} className="space-y-8 rounded-xl border bg-card p-6 shadow-sm">
+    <form
+      action={formAction}
+      className="space-y-8 rounded-xl border bg-card p-6 shadow-sm"
+    >
       {state.message ? (
         <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
           {state.message}
@@ -66,7 +70,9 @@ export default function ListingForm({
         <h2 className="text-lg font-medium">Spot details</h2>
 
         <div className="space-y-2">
-          <label htmlFor="title" className="text-sm font-medium">Title</label>
+          <label htmlFor="title" className="text-sm font-medium">
+            Title
+          </label>
           <input
             id="title"
             name="title"
@@ -80,23 +86,33 @@ export default function ListingForm({
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="description" className="text-sm font-medium">Description</label>
+          <label htmlFor="description" className="text-sm font-medium">
+            Description
+          </label>
           <textarea
             id="description"
             name="description"
             rows={4}
-            defaultValue={state.values.description ?? listing?.description ?? ""}
+            defaultValue={
+              state.values.description ?? listing?.description ?? ""
+            }
             className="w-full rounded-md border px-3 py-2"
           />
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="category" className="text-sm font-medium">Category</label>
+          <label htmlFor="category" className="text-sm font-medium">
+            Category
+          </label>
           <select
-            key={state.values.category ?? listing?.category ?? "category-default"}
+            key={
+              state.values.category ?? listing?.category ?? "category-default"
+            }
             id="category"
             name="category"
-            defaultValue={state.values.category ?? listing?.category ?? "residential"}
+            defaultValue={
+              state.values.category ?? listing?.category ?? "residential"
+            }
             className="w-full rounded-md border px-3 py-2"
           >
             {LISTING_CATEGORIES.map((category) => (
@@ -111,7 +127,9 @@ export default function ListingForm({
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="location" className="text-sm font-medium">Location</label>
+          <label htmlFor="location" className="text-sm font-medium">
+            Area / City
+          </label>
           <input
             id="location"
             name="location"
@@ -125,37 +143,14 @@ export default function ListingForm({
           ) : null}
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label htmlFor="latitude" className="text-sm font-medium">Latitude</label>
-            <input
-              id="latitude"
-              name="latitude"
-              type="number"
-              step="any"
-              defaultValue={state.values.latitude ?? listing?.latitude ?? ""}
-              className="w-full rounded-md border px-3 py-2"
-            />
-            {state.fieldErrors.latitude ? (
-              <p className="text-sm text-red-600">{state.fieldErrors.latitude}</p>
-            ) : null}
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="longitude" className="text-sm font-medium">Longitude</label>
-            <input
-              id="longitude"
-              name="longitude"
-              type="number"
-              step="any"
-              defaultValue={state.values.longitude ?? listing?.longitude ?? ""}
-              className="w-full rounded-md border px-3 py-2"
-            />
-            {state.fieldErrors.longitude ? (
-              <p className="text-sm text-red-600">{state.fieldErrors.longitude}</p>
-            ) : null}
-          </div>
-        </div>
+        <AddressPicker
+          defaultAddress={state.values.address ?? listing?.address ?? ""}
+          defaultLatitude={state.values.latitude ?? listing?.latitude ?? ""}
+          defaultLongitude={state.values.longitude ?? listing?.longitude ?? ""}
+          addressError={state.fieldErrors.address}
+          latitudeError={state.fieldErrors.latitude}
+          longitudeError={state.fieldErrors.longitude}
+        />
 
         {currentImageUrl ? (
           <div className="space-y-3">
@@ -193,12 +188,16 @@ export default function ListingForm({
         <h2 className="text-lg font-medium">Pricing</h2>
 
         <div className="space-y-2">
-          <label htmlFor="pricing_mode" className="text-sm font-medium">Rental mode</label>
+          <label htmlFor="pricing_mode" className="text-sm font-medium">
+            Rental mode
+          </label>
           <select
             id="pricing_mode"
             name="pricing_mode"
             value={pricingMode}
-            onChange={(event) => setPricingMode(event.target.value as PricingMode)}
+            onChange={(event) =>
+              setPricingMode(event.target.value as PricingMode)
+            }
             className="w-full rounded-md border px-3 py-2"
           >
             <option value="hourly">Hourly</option>
@@ -209,36 +208,48 @@ export default function ListingForm({
 
         {showHourlyFields ? (
           <div className="space-y-2">
-            <label htmlFor="price_per_hour" className="text-sm font-medium">Price per hour</label>
+            <label htmlFor="price_per_hour" className="text-sm font-medium">
+              Price per hour
+            </label>
             <input
               id="price_per_hour"
               name="price_per_hour"
               type="number"
               min="0"
               step="1"
-              defaultValue={state.values.price_per_hour ?? listing?.price_per_hour ?? ""}
+              defaultValue={
+                state.values.price_per_hour ?? listing?.price_per_hour ?? ""
+              }
               className="w-full rounded-md border px-3 py-2"
             />
             {state.fieldErrors.price_per_hour ? (
-              <p className="text-sm text-red-600">{state.fieldErrors.price_per_hour}</p>
+              <p className="text-sm text-red-600">
+                {state.fieldErrors.price_per_hour}
+              </p>
             ) : null}
           </div>
         ) : null}
 
         {showMonthlyFields ? (
           <div className="space-y-2">
-            <label htmlFor="price_per_month" className="text-sm font-medium">Price per month</label>
+            <label htmlFor="price_per_month" className="text-sm font-medium">
+              Price per month
+            </label>
             <input
               id="price_per_month"
               name="price_per_month"
               type="number"
               min="0"
               step="1"
-              defaultValue={state.values.price_per_month ?? listing?.price_per_month ?? ""}
+              defaultValue={
+                state.values.price_per_month ?? listing?.price_per_month ?? ""
+              }
               className="w-full rounded-md border px-3 py-2"
             />
             {state.fieldErrors.price_per_month ? (
-              <p className="text-sm text-red-600">{state.fieldErrors.price_per_month}</p>
+              <p className="text-sm text-red-600">
+                {state.fieldErrors.price_per_month}
+              </p>
             ) : null}
           </div>
         ) : null}
@@ -250,30 +261,42 @@ export default function ListingForm({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <label htmlFor="available_from" className="text-sm font-medium">From</label>
+              <label htmlFor="available_from" className="text-sm font-medium">
+                From
+              </label>
               <input
                 id="available_from"
                 name="available_from"
                 type="time"
-                defaultValue={state.values.available_from ?? listing?.available_from ?? ""}
+                defaultValue={
+                  state.values.available_from ?? listing?.available_from ?? ""
+                }
                 className="w-full rounded-md border px-3 py-2"
               />
               {state.fieldErrors.available_from ? (
-                <p className="text-sm text-red-600">{state.fieldErrors.available_from}</p>
+                <p className="text-sm text-red-600">
+                  {state.fieldErrors.available_from}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="available_to" className="text-sm font-medium">To</label>
+              <label htmlFor="available_to" className="text-sm font-medium">
+                To
+              </label>
               <input
                 id="available_to"
                 name="available_to"
                 type="time"
-                defaultValue={state.values.available_to ?? listing?.available_to ?? ""}
+                defaultValue={
+                  state.values.available_to ?? listing?.available_to ?? ""
+                }
                 className="w-full rounded-md border px-3 py-2"
               />
               {state.fieldErrors.available_to ? (
-                <p className="text-sm text-red-600">{state.fieldErrors.available_to}</p>
+                <p className="text-sm text-red-600">
+                  {state.fieldErrors.available_to}
+                </p>
               ) : null}
             </div>
           </div>
@@ -297,7 +320,9 @@ export default function ListingForm({
               ))}
             </div>
             {state.fieldErrors.available_days ? (
-              <p className="text-sm text-red-600">{state.fieldErrors.available_days}</p>
+              <p className="text-sm text-red-600">
+                {state.fieldErrors.available_days}
+              </p>
             ) : null}
           </fieldset>
         </section>
@@ -307,7 +332,9 @@ export default function ListingForm({
         <h2 className="text-lg font-medium">Publishing</h2>
 
         <div className="space-y-2">
-          <label htmlFor="status" className="text-sm font-medium">Status</label>
+          <label htmlFor="status" className="text-sm font-medium">
+            Status
+          </label>
           <select
             id="status"
             name="status"
@@ -334,5 +361,5 @@ export default function ListingForm({
         </button>
       </div>
     </form>
-  )
+  );
 }

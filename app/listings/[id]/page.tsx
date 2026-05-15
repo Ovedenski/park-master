@@ -4,6 +4,7 @@ import { getAllListings } from "@/lib/data/listings";
 import { createClient } from "@/lib/supabase/server";
 import type { MyListing } from "@/lib/types";
 import BookingForm from "@/components/listings/booking-form";
+import ListingLocationMap from "@/components/listings/listing-location-map";
 
 type ListingPageProps = {
   params: Promise<{
@@ -77,9 +78,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
           {listingData.description && (
             <div className="rounded-2xl border border-neutral-200 p-6">
               <h2 className="text-xl font-semibold">Description</h2>
-              <p className="mt-3 text-neutral-600">
-                {listingData.description}
-              </p>
+              <p className="mt-3 text-neutral-600">{listingData.description}</p>
             </div>
           )}
 
@@ -101,13 +100,34 @@ export default async function ListingPage({ params }: ListingPageProps) {
               </div>
             )}
 
-            {listingData.pricing_mode === "monthly" && (
-              <p className="mt-3 text-neutral-600">
-                Available for monthly rental.
-              </p>
-            )}
           </div>
         </div>
+
+        {listingData.latitude && listingData.longitude ? (
+          <div className="rounded-2xl border border-neutral-200 p-6">
+            <h2 className="text-xl font-semibold">Location</h2>
+
+            <div className="mt-3 space-y-1">
+              <p className="font-medium">
+                {listingData.address ?? listingData.location}
+              </p>
+
+              {listingData.address && (
+                <p className="text-sm text-neutral-500">
+                  {listingData.location}
+                </p>
+              )}
+            </div>
+
+            <div className="mt-4">
+              <ListingLocationMap
+                latitude={listingData.latitude}
+                longitude={listingData.longitude}
+                address={listingData.address ?? listingData.location}
+              />
+            </div>
+          </div>
+        ) : null}
 
         <aside className="lg:sticky lg:top-8 lg:self-start">
           <BookingForm
