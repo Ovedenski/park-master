@@ -8,7 +8,22 @@ type NominatimResult = {
   display_name: string;
   lat: string;
   lon: string;
+  address?: NominatimAddress;
 };
+
+type NominatimAddress = {
+  city?: string;
+  town?: string;
+  village?: string;
+  municipality?: string;
+  suburb?: string;
+  neighbourhood?: string;
+  quarter?: string;
+  city_district?: string;
+  county?: string;
+  state?: string;
+};
+
 
 type AddressPickerProps = {
   defaultAddress?: string | null;
@@ -39,6 +54,8 @@ export default function AddressPicker({
   const [longitude, setLongitude] = useState(
     defaultLongitude ? String(defaultLongitude) : "",
   );
+  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
   const [results, setResults] = useState<NominatimResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -86,10 +103,27 @@ export default function AddressPicker({
   }, [query]);
 
   function selectResult(result: NominatimResult) {
+    const nextCity =
+      result.address?.city ??
+      result.address?.town ??
+      result.address?.village ??
+      result.address?.municipality ??
+      "";
+
+    const nextDistrict =
+      result.address?.suburb ??
+      result.address?.neighbourhood ??
+      result.address?.quarter ??
+      result.address?.city_district ??
+      result.address?.county ??
+      "";
+
     setAddress(result.display_name);
     setQuery(result.display_name);
     setLatitude(result.lat);
     setLongitude(result.lon);
+    setCity(nextCity);
+    setDistrict(nextDistrict);
     setResults([]);
   }
 
@@ -142,6 +176,8 @@ export default function AddressPicker({
         <input type="hidden" name="address" value={address} />
         <input type="hidden" name="latitude" value={latitude} />
         <input type="hidden" name="longitude" value={longitude} />
+        <input type="hidden" name="city" value={city} />
+        <input type="hidden" name="district" value={district} />
 
         {isSearching ? (
           <p className="text-sm text-muted-foreground">Searching...</p>

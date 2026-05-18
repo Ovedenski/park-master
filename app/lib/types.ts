@@ -33,27 +33,29 @@ export type ListingFormValues = {
 };
 
 export type MyListing = {
-  id: string
-  host_id: string
-  title: string
-  description: string | null
-  category: string
-  address: string | null
-  location: string
-  latitude: number | null
-  longitude: number | null
-  pricing_mode: PricingMode
-  price_per_hour: number | null
-  price_per_month: number | null
-  available_from: string | null
-  available_to: string | null
-  available_days: string[]
-  image_path: string | null
-  image_url: string | null
-  status: ListingStatus
-  created_at: string
-  updated_at: string
-}
+  id: string;
+  host_id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  address: string | null;
+  city?: string | null;
+  district?: string | null;
+  location: string;
+  latitude: number | null;
+  longitude: number | null;
+  pricing_mode: PricingMode;
+  price_per_hour: number | null;
+  price_per_month: number | null;
+  available_from: string | null;
+  available_to: string | null;
+  available_days: string[];
+  image_path: string | null;
+  image_url: string | null;
+  status: ListingStatus;
+  created_at: string;
+  updated_at: string;
+};
 
 export type ListingFormState = {
   success: boolean;
