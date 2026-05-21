@@ -21,7 +21,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { categories } from "@/lib/categories";
 import { LISTING_CATEGORIES } from "@/lib/types";
 
 const leftLinks = [

@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useMemo, useState } from "react"
+import { useActionState, useMemo, useState, useEffect } from "react"
 import type {
   ListingFormState,
   ListingFormValues,
@@ -41,6 +41,26 @@ export default function ListingForm({
 }: ListingFormProps) {
   const [state, formAction, isPending] = useActionState(action, initialState)
 
+useEffect(() => {
+  const firstErrorField = Object.keys(state.fieldErrors)[0];
+  if (!firstErrorField) return;
+
+  // Map error keys to actual DOM ids when they differ
+  const idMap: Record<string, string> = {
+    address: "address-search",
+    latitude: "address-search",
+    longitude: "address-search",
+  };
+  const targetId = idMap[firstErrorField] ?? firstErrorField;
+
+  const el = document.getElementById(targetId);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    // small delay so focus doesn't fight the scroll
+    setTimeout(() => (el as HTMLElement).focus({ preventScroll: true }), 300);
+  }
+  }, [state]);
+
   const initialPricingMode = (state.values.pricing_mode ??
     listing?.pricing_mode ??
     "hourly") as PricingMode
@@ -77,7 +97,6 @@ export default function ListingForm({
             id="title"
             name="title"
             defaultValue={state.values.title ?? listing?.title ?? ""}
-            required
             className="w-full rounded-md border px-3 py-2"
           />
           {state.fieldErrors.title ? (
@@ -134,7 +153,6 @@ export default function ListingForm({
             id="location"
             name="location"
             defaultValue={state.values.location ?? listing?.location ?? ""}
-            required
             placeholder="Example: Lozenets, Sofia"
             className="w-full rounded-md border px-3 py-2"
           />

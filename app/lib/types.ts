@@ -86,3 +86,32 @@ export const LISTING_CATEGORIES: { value: ListingCategory; label: string; slug: 
   { value: "commercial", label: "Commercial", slug: "commercial" },
   { value: "public", label: "Public", slug: "public" },
 ]
+
+// Booking form state for useActionState
+export type BookingFormValues = {
+  guest_name?: string;
+  booking_mode?: "hourly" | "monthly";
+  date?: string;
+  start_time?: string;
+  end_time?: string;
+  check_in?: string;
+  check_out?: string;
+};
+
+export type BookingFormFieldErrors = Partial<
+  Record<keyof BookingFormValues, string>
+>;
+
+export type BookingFormState = {
+  success: boolean;
+  message: string;
+  fieldErrors: BookingFormFieldErrors;
+  values: BookingFormValues;
+};
+
+export const emptyBookingFormState: BookingFormState = {
+  success: false,
+  message: "",
+  fieldErrors: {},
+  values: {},
+};
