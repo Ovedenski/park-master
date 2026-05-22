@@ -34,22 +34,25 @@ export default async function ListingPage({ params }: ListingPageProps) {
   const isOwner = user?.id === listingData.host_id;
 
   return (
-    <main className="px-6 py-10">
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_380px]">
+    <main className="px-4 py-8 sm:px-6 lg:py-10">
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-8">
+        {/* LEFT COLUMN — all listing info */}
         <div className="space-y-6">
-          <div>
+          <header>
             <p className="text-sm text-neutral-500">Listing</p>
-            <h1 className="text-3xl font-semibold">{listingData.title}</h1>
+            <h1 className="text-2xl font-semibold sm:text-3xl">
+              {listingData.title}
+            </h1>
             <p className="text-neutral-600">{listingData.location}</p>
-          </div>
+          </header>
 
           <img
             src={listingData.image_url}
             alt={listingData.title}
-            className="h-[420px] w-full rounded-2xl object-cover"
+            className="aspect-[16/10] w-full rounded-2xl object-cover sm:aspect-[16/9] lg:h-[420px] lg:aspect-auto"
           />
 
-          <div className="grid gap-4 rounded-2xl border border-neutral-200 p-6 md:grid-cols-3">
+          <div className="grid gap-4 rounded-2xl border border-neutral-200 p-6 sm:grid-cols-3">
             <div>
               <p className="text-sm text-neutral-500">Category</p>
               <p className="font-medium">{listingData.category}</p>
@@ -78,7 +81,9 @@ export default async function ListingPage({ params }: ListingPageProps) {
           {listingData.description && (
             <div className="rounded-2xl border border-neutral-200 p-6">
               <h2 className="text-xl font-semibold">Description</h2>
-              <p className="mt-3 text-neutral-600">{listingData.description}</p>
+              <p className="mt-3 whitespace-pre-line text-neutral-600">
+                {listingData.description}
+              </p>
             </div>
           )}
 
@@ -99,36 +104,36 @@ export default async function ListingPage({ params }: ListingPageProps) {
                 </p>
               </div>
             )}
-
           </div>
+
+          {listingData.latitude && listingData.longitude && (
+            <div className="rounded-2xl border border-neutral-200 p-6">
+              <h2 className="text-xl font-semibold">Location</h2>
+
+              <div className="mt-3 space-y-1">
+                <p className="font-medium">
+                  {listingData.address ?? listingData.location}
+                </p>
+
+                {listingData.address && (
+                  <p className="text-sm text-neutral-500">
+                    {listingData.location}
+                  </p>
+                )}
+              </div>
+
+              <div className="mt-4">
+                <ListingLocationMap
+                  latitude={listingData.latitude}
+                  longitude={listingData.longitude}
+                  address={listingData.address ?? listingData.location}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
-        {listingData.latitude && listingData.longitude ? (
-          <div className="rounded-2xl border border-neutral-200 p-6">
-            <h2 className="text-xl font-semibold">Location</h2>
-
-            <div className="mt-3 space-y-1">
-              <p className="font-medium">
-                {listingData.address ?? listingData.location}
-              </p>
-
-              {listingData.address && (
-                <p className="text-sm text-neutral-500">
-                  {listingData.location}
-                </p>
-              )}
-            </div>
-
-            <div className="mt-4">
-              <ListingLocationMap
-                latitude={listingData.latitude}
-                longitude={listingData.longitude}
-                address={listingData.address ?? listingData.location}
-              />
-            </div>
-          </div>
-        ) : null}
-
+        {/* RIGHT COLUMN — sticky booking sidebar */}
         <aside className="lg:sticky lg:top-8 lg:self-start">
           <BookingForm
             listing={listingData}

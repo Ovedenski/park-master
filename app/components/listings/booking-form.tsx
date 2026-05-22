@@ -1,10 +1,14 @@
-// components/listings/booking-form.tsx
 "use client";
 
 import { useActionState, useMemo, useState, useEffect } from "react";
 import { createBookingAction } from "@/listings/[id]/actions";
 import { emptyBookingFormState } from "@/lib/types";
 import type { MyListing } from "@/lib/types";
+import {
+  calcHourlyTotal,
+  HOURLY_BOOKING_MAX_HOURS,
+  HOURLY_BOOKING_MIN_MINUTES,
+} from "@/lib/billing";
 
 type BookingFormProps = {
   listing: MyListing;
@@ -59,17 +63,29 @@ export default function BookingForm({
     const endDateStr = endDateObj.toISOString().slice(0, 10);
     const endAt = new Date(`${endDateStr}T${endTime}:00`);
 
-    const hours = (endAt.getTime() - startAt.getTime()) / 1000 / 60 / 60;
-    if (hours <= 0 || hours > 24) {
-      return { isOvernight, hours, endDateStr, invalid: true as const };
+    const rawMinutes = (endAt.getTime() - startAt.getTime()) / 1000 / 60;
+    const rawHours = rawMinutes / 60;
+
+    if (
+      rawMinutes < HOURLY_BOOKING_MIN_MINUTES ||
+      rawHours > HOURLY_BOOKING_MAX_HOURS
+    ) {
+      return {
+        isOvernight,
+        hours: rawHours,
+        endDateStr,
+        invalid: true as const,
+      };
     }
 
-    const billedHours = Math.ceil(hours);
-    const total = billedHours * listing.price_per_hour;
+    const { billedHours, total } = calcHourlyTotal(
+      rawHours,
+      listing.price_per_hour,
+    );
 
     return {
       isOvernight,
-      hours,
+      hours: rawHours,
       billedHours,
       total,
       endDateStr,
@@ -168,6 +184,7 @@ export default function BookingForm({
                 <input
                   type="time"
                   name="start_time"
+                  step={900}
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   className="mt-1 w-full rounded-xl border border-neutral-300 px-4 py-2"
@@ -184,6 +201,7 @@ export default function BookingForm({
                 <input
                   type="time"
                   name="end_time"
+                  step={900}
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
                   className="mt-1 w-full rounded-xl border border-neutral-300 px-4 py-2"
@@ -211,18 +229,22 @@ export default function BookingForm({
               >
                 {hourlyPreview.invalid ? (
                   <p>
-                    Please pick a valid time range (up to 24 hours, end after
-                    start).
+                    Please pick a valid time range (minimum{" "}
+                    {HOURLY_BOOKING_MIN_MINUTES} minutes, maximum{" "}
+                    {HOURLY_BOOKING_MAX_HOURS} hours).
                   </p>
                 ) : (
                   <>
                     <p>
                       <span className="font-medium">Duration:</span>{" "}
                       {hourlyPreview.hours.toFixed(2)} h
-                      {hourlyPreview.billedHours !== hourlyPreview.hours && (
+                      {Math.abs(
+                        hourlyPreview.billedHours - hourlyPreview.hours,
+                      ) > 0.001 && (
                         <span className="text-neutral-500">
                           {" "}
-                          (billed as {hourlyPreview.billedHours} h)
+                          (billed as {hourlyPreview.billedHours.toFixed(2)} h,
+                          rounded up to 15 min)
                         </span>
                       )}
                     </p>

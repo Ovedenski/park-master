@@ -1,5 +1,11 @@
-// app/listings/[id]/actions.ts
 "use server";
+
+import {
+  HOURLY_BOOKING_MAX_HOURS,
+  HOURLY_BOOKING_MIN_MINUTES,
+  calcHourlyTotal,
+  calcMonthlyTotal,
+} from "@/lib/billing";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -105,16 +111,17 @@ export async function createBookingAction(
 
       const start = new Date(startAt);
       const end = new Date(endAt);
-      const hours = (end.getTime() - start.getTime()) / 1000 / 60 / 60;
+      const rawMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
+      const rawHours = rawMinutes / 60;
 
-      if (hours <= 0) {
-        fieldErrors.end_time = "End time must be after start time.";
-      } else if (hours > 24) {
-        fieldErrors.end_time = "Hourly bookings cannot exceed 24 hours.";
+      if (rawMinutes < HOURLY_BOOKING_MIN_MINUTES) {
+        fieldErrors.end_time = `Minimum booking is ${HOURLY_BOOKING_MIN_MINUTES} minutes.`;
+      } else if (rawHours > HOURLY_BOOKING_MAX_HOURS) {
+        fieldErrors.end_time = `Hourly bookings cannot exceed ${HOURLY_BOOKING_MAX_HOURS} hours.`;
       } else {
         checkIn = values.date;
         checkOut = endDateStr;
-        total = Math.ceil(hours) * listing.price_per_hour;
+        total = calcHourlyTotal(rawHours, listing.price_per_hour).total;
       }
     }
   } else if (values.booking_mode === "monthly") {
@@ -132,8 +139,7 @@ export async function createBookingAction(
       } else {
         checkIn = values.check_in;
         checkOut = values.check_out;
-        const months = Math.ceil(days / 30);
-        total = months * listing.price_per_month;
+        total = calcMonthlyTotal(days, listing.price_per_month).total;
       }
     }
   }
