@@ -1,6 +1,14 @@
 import Link from "next/link"
 import { login } from "./actions"
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Log in",
+  description: "Log in to your ParkMaster account.",
+  robots: { index: false, follow: false },
+};
+
 type LoginPageProps = {
   searchParams?: Promise<{
     message?: string

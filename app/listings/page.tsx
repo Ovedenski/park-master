@@ -3,6 +3,19 @@ import ListingsGrid from "@/components/listings/listings-grid";
 import ListingsFilters from "@/components/listings/listings-filters";
 import { getAllListings } from "@/lib/data/listings";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Browse parking spots",
+  description:
+    "Search and filter available parking spots near you. Rent by the hour or by the month.",
+  openGraph: {
+    title: "Browse parking spots · ParkMaster",
+    description:
+      "Search and filter available parking spots near you. Rent by the hour or by the month.",
+  },
+};
+
 type ListingsPageProps = {
   searchParams: Promise<{
     category?: string;

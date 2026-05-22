@@ -2,6 +2,14 @@ import PageHeader from "@/components/account/page-header"
 import SectionCard from "@/components/account/section-card"
 import StatCard from "@/components/account/stat-card"
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My account",
+  description: "Manage your ParkMaster account, listings, and bookings.",
+  robots: { index: false, follow: false }, // private page → don't index
+};
+
 export default function AccountPage() {
   return (
     <main className="space-y-8">

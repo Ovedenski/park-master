@@ -6,6 +6,41 @@ import type { MyListing } from "@/lib/types";
 import BookingForm from "@/components/listings/booking-form";
 import ListingLocationMap from "@/components/listings/listing-location-map";
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const listings = await getAllListings();
+  const listing = listings.find((l) => l.id === id);
+
+  if (!listing) {
+    return { title: "Listing not found" };
+  }
+
+  const priceLine =
+    listing.pricing_mode === "monthly"
+      ? `$${listing.price_per_month}/month`
+      : `$${listing.price_per_hour}/hour`;
+
+  return {
+    title: listing.title,
+    description:
+      listing.description ??
+      `Rent this parking spot in ${listing.location} for ${priceLine} on ParkMaster.`,
+    openGraph: {
+      title: `${listing.title} · ParkMaster`,
+      description:
+        listing.description ??
+        `Rent this parking spot in ${listing.location} for ${priceLine}.`,
+      images: listing.image_url ? [listing.image_url] : undefined,
+    },
+  };
+}
+
 type ListingPageProps = {
   params: Promise<{
     id: string;

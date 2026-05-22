@@ -1,13 +1,82 @@
+import { Roboto } from "next/font/google";
+const roboto = Roboto({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  variable: "--font-display",
+});
+
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
+
 import { ThemeProvider } from "./components/theme-provider";
 import NavbarMenu from "@/components/navbar";
 import { Footer } from "./components/footer";
-import "leaflet/dist/leaflet.css";
 
-export default function RootLayout({ children }) {
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "ParkMaster — Find and rent parking spots",
+    template: "%s · ParkMaster",
+  },
+  description:
+    "ParkMaster is a marketplace for renting private parking spots by the hour or by the month.",
+  applicationName: "ParkMaster",
+  keywords: [
+    "parking",
+    "parking rental",
+    "private parking",
+    "monthly parking",
+    "hourly parking",
+    "park",
+    "паркинг",
+    "паркомясто",
+  ],
+  authors: [{ name: "ParkMaster" }],
+  openGraph: {
+    type: "website",
+    siteName: "ParkMaster",
+    title: "ParkMaster — Find and rent parking spots",
+    description:
+      "Rent a private parking spot by the hour or by the month, or list your own.",
+    url: siteUrl,
+    locale: "bg_BG",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ParkMaster — Find and rent parking spots",
+    description:
+      "Rent a private parking spot by the hour or by the month, or list your own.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
+    <html lang="bg" suppressHydrationWarning className={roboto.variable}>
+      <body className="antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -22,4 +91,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-// Testing git commits and pulls

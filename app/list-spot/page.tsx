@@ -6,6 +6,19 @@ import ListingForm from "@/components/listings/listing-form"
 import { createSpot } from "@/list-spot/actions"
 import { initialListingFormState } from "@/lib/listings/form-state"
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "List your parking spot",
+  description:
+    "Earn passive income by renting out your unused parking spot — hourly or monthly.",
+  openGraph: {
+    title: "List your parking spot · ParkMaster",
+    description:
+      "Earn passive income by renting out your unused parking spot — hourly or monthly.",
+  },
+};
+
 export default async function ListSpotPage() {
   const supabase = await createClient()
   const {

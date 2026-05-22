@@ -9,6 +9,14 @@ import { getMyListings } from "@/lib/data/listings"
 import { deleteListing } from "./actions"
 import DeleteListingButton from "@/components/account/delete-listing-button"
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My listings",
+  description: "Manage your parking spot listings on ParkMaster.",
+  robots: { index: false, follow: false },
+};
+
 function formatPricing(listing: {
   pricing_mode: "hourly" | "monthly" | "both"
   price_per_hour: number | null

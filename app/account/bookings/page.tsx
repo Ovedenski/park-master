@@ -11,6 +11,14 @@ import {
 } from "@/lib/data/bookings";
 import { cancelBooking } from "./actions";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "My bookings",
+  description: "View and manage your parking bookings on ParkMaster.",
+  robots: { index: false, follow: false },
+};
+
 type MyBookingsPageProps = {
   searchParams?: Promise<{
     view?: string;

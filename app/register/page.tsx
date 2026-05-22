@@ -1,6 +1,14 @@
 import Link from "next/link"
 import { signup } from "./actions"
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create an account",
+  description:
+    "Sign up for ParkMaster to book parking or list your own parking spot.",
+};
+
 type RegisterPageProps = {
   searchParams?: Promise<{
     message?: string
