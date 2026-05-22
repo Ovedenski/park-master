@@ -1,104 +1,49 @@
-"use client";
-import { Container } from "@/components/layout/container"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import * as React from "react";
+// app/page.tsx
+import Link from "next/link";
+import { Container } from "@/components/layout/container";
+import { Button } from "@/components/ui/button";
+import { getAllListings } from "@/lib/data/listings";
 
-export default function HomePage() {
+import { HeroSection } from "@/components/home/hero-section";
+import { HowItWorksSection } from "@/components/home/how-it-works-section";
+import { CategoriesSection } from "@/components/home/categories-section";
+import { FeaturedSpotsSection } from "@/components/home/featured-spots-section";
+import { ValuePropsSection } from "@/components/home/value-props-section";
+import { HostCtaSection } from "@/components/home/host-cta-section";
+import { FaqSection } from "@/components/home/faq-section";
+
+export default async function HomePage() {
+  const allListings = await getAllListings();
+  const featured = allListings.slice(0, 6);
+
   return (
-    // <main className="flex min-h-screen flex-col items-center justify-between p-24">
-    //   <h1 className="text-6xl font-bold">Welcome to Home Page!</h1>
-    // </main>
-
     <main>
-      {/* Hero */}
-      <section className="py-24">
+      <HeroSection />
+      <HowItWorksSection />
+      <CategoriesSection />
+      <FeaturedSpotsSection listings={featured} />
+      <ValuePropsSection />
+      <HostCtaSection />
+      <FaqSection />
+
+      {/* Final CTA — keep the closer punchy */}
+      <section className="bg-primary py-24 text-primary-foreground">
         <Container className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Rent Out Your Parking Spot Easily
-          </h1>
-
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Turn your unused parking space into income. List it in minutes and
-            connect with drivers nearby.
+          <h2 className="text-3xl font-semibold md:text-4xl">
+            Start earning from your parking spot today
+          </h2>
+          <p className="mt-4 text-lg opacity-90">
+            It takes less than 5 minutes to list your space.
           </p>
-
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8">
             <Link href="/list-spot">
-              <Button size="lg">List Your Spot</Button>
-            </Link>
-
-            <Link href="/listings">
-              <Button variant="outline" size="lg">
-                Browse Spots
+              <Button size="lg" variant="secondary">
+                List Your Spot
               </Button>
             </Link>
           </div>
         </Container>
-      </section>       
-      
-     {/* PLan na homePage-a
-        1. Navbar 
-        2. Image section with cathy phrase and a CTA button (moje da e filtyr napravo da tursi za naselenoto mqsto) 
-        3. Na kratko za platformata (otdavai pod naem , vzemai pod naem , za ralzichni chasove i parkingni na magazini- glavnata ideq
-          da se integrirat parkingi na golemi magazini za sled rabotno vreme)
-        4. List if categories of the parking spots
-        5. Testimonials 
-        6. Footer Navbar ( menu byrzi vruzki, menu Privacy Policy, menu contati )
-        7. CopyRight 
-      */}
-
-
-      {/* <section className="py-20">
-      <Container>
-        <div className="flex items-center justify-between">
-          <h2 className="text-3xl font-semibold">
-            Available Spots
-          </h2>
-
-          <Link href="/listings">
-            <Button variant="ghost">View All</Button>
-          </Link>
-        </div>
-
-        <div className="mt-10 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          { Mock Cards }
-          <div className="border rounded-xl p-6">
-            <h3 className="font-medium">Downtown Garage</h3>
-            <p className="text-muted-foreground mt-2">
-              $8 / hour
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-6">
-            <h3 className="font-medium">Private Driveway</h3>
-            <p className="text-muted-foreground mt-2">
-              $5 / hour
-            </p>
-          </div>
-        </div>
-      </Container>
-    </section> */}
-
-    <section className="py-24 bg-primary text-primary-foreground">
-      <Container className="text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold">
-          Start Earning From Your Parking Spot Today
-        </h2>
-
-        <p className="mt-4 text-lg opacity-90">
-          It takes less than 5 minutes to list your space.
-        </p>
-
-        <div className="mt-8">
-          <Link href="/create">
-            <Button size="lg" variant="secondary">
-              List Your Spot
-            </Button>
-          </Link>
-        </div>
-      </Container>
-    </section>
-</main>
+      </section>
+    </main>
   );
 }

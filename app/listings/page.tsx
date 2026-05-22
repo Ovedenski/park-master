@@ -1,4 +1,3 @@
-// app/listings/page.tsx
 import ListingsGrid from "@/components/listings/listings-grid";
 import ListingsFilters from "@/components/listings/listings-filters";
 import { getAllListings } from "@/lib/data/listings";
@@ -18,6 +17,7 @@ export const metadata: Metadata = {
 
 type ListingsPageProps = {
   searchParams: Promise<{
+    q?: string;
     category?: string;
     pricing_mode?: string;
     city?: string;
@@ -32,7 +32,7 @@ export default async function ListingsPage({
 }: ListingsPageProps) {
   const params = await searchParams;
 
-  const { category, pricing_mode, city, district, min_price, max_price } =
+  const {q, category, pricing_mode, city, district, min_price, max_price } =
     params;
 
   const listings = await getAllListings();
@@ -87,6 +87,22 @@ export default async function ListingsPage({
 
     if (district && district !== "all" && listing.district !== district) {
       return false;
+    }
+
+    if (q) {
+      const needle = q.toLowerCase().trim();
+      const haystack = [
+        listing.title,
+        listing.location,
+        listing.address,
+        listing.city,
+        listing.district,
+        listing.description,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      if (!haystack.includes(needle)) return false;
     }
 
     if (minPrice !== null || maxPrice !== null) {

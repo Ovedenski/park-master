@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -89,14 +90,39 @@ export default function NavbarMenu() {
         </div>
 
         {/* Center logo */}
-        <div className="flex shrink-0 justify-center px-4">
+        <Link
+          href="/"
+          className="flex items-center"
+          aria-label="ParkMaster home"
+        >
+          {/* Light mode */}
+          <Image
+            src="/images/logo-tight.png"
+            alt="ParkMaster"
+            width={801}
+            height={276}
+            priority
+            className="block dark:hidden h-9 w-auto"
+          />
+          {/* Dark mode */}
+          <Image
+            src="/images/logo-dark-tight.png"
+            alt="ParkMaster"
+            width={801}
+            height={276}
+            priority
+            className="hidden dark:block h-9 w-auto"
+          />
+        </Link>
+
+        {/* <div className="flex shrink-0 justify-center px-4">
           <Link
             href="/"
             className="text-lg font-bold tracking-tight transition-colors hover:text-primary"
           >
             ParkMaster
           </Link>
-        </div>
+        </div> */}
 
         {/* Right desktop */}
         <div className="hidden min-w-0 flex-1 items-center justify-end gap-4 md:flex">

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Github, Twitter, Linkedin } from "lucide-react"
 import { siteConfig } from "@/lib/site"
 
@@ -8,15 +9,18 @@ export function Footer() {
   return (
     <footer className="border-t bg-background">
       <div className="container mx-auto px-4 py-10">
-
         {/* Grid Layout */}
         <div className="grid gap-8 md:grid-cols-3">
-
           {/* Brand Section */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold">
-              {siteConfig.name}
-            </h3>
+            <h3 className="text-lg font-semibold">{siteConfig.name}</h3>
+            <Image
+              src="/images/logo.png"
+              alt="ParkMaster"
+              width={276}
+              height={276}
+              className="h-10 w-10"
+            />
             <p className="text-sm text-muted-foreground">
               Find and list parking spots easily and securely.
             </p>
@@ -29,12 +33,18 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link href="/privacy" className="hover:text-foreground transition-colors">
+                <Link
+                  href="/privacy"
+                  className="hover:text-foreground transition-colors"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-foreground transition-colors">
+                <Link
+                  href="/terms"
+                  className="hover:text-foreground transition-colors"
+                >
                   Terms of Service
                 </Link>
               </li>
@@ -58,15 +68,13 @@ export function Footer() {
               </Link>
             </div>
           </div>
-
         </div>
 
         {/* Bottom Copyright */}
         <div className="mt-10 border-t pt-6 text-center text-sm text-muted-foreground">
           © {currentYear} {siteConfig.name}. All rights reserved.
         </div>
-
       </div>
     </footer>
-  )
+  );
 }
