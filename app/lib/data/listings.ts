@@ -1,8 +1,10 @@
 import "server-only"
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import type { Listing } from "@/lib/types";
 import { getListingImageUrl } from "@/lib/listings/storage"
+import type { Listing } from "@/lib/types";
+import { narrowListingRow } from "../listings/normalize";
+
 
 export async function getMyListings(): Promise<Listing[]> {
   const supabase = await createClient();
@@ -26,11 +28,15 @@ export async function getMyListings(): Promise<Listing[]> {
     throw new Error(error.message);
   }
 
-  return (data ?? []).map((listing) => ({
-    ...listing,
-    available_days: listing.available_days ?? [],
-    image_url: getListingImageUrl(supabase, listing.image_path),
-  }));
+  return (data ?? []).map((row) =>
+    narrowListingRow(
+      row,
+      row.image_path
+        ? supabase.storage.from("listings-images").getPublicUrl(row.image_path)
+            .data.publicUrl
+        : null,
+    ),
+  );
 }
 
 export async function getAllListings(): Promise<Listing[]> {
@@ -46,9 +52,13 @@ export async function getAllListings(): Promise<Listing[]> {
     throw new Error(error.message);
   }
 
-  return (data ?? []).map((listing) => ({
-    ...listing,
-    available_days: listing.available_days ?? [],
-    image_url: getListingImageUrl(supabase, listing.image_path),
-  }));
+  return (data ?? []).map((row) =>
+    narrowListingRow(
+      row,
+      row.image_path
+        ? supabase.storage.from("listings-images").getPublicUrl(row.image_path)
+            .data.publicUrl
+        : null,
+    ),
+  );
 }
