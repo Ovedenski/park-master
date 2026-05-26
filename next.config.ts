@@ -1,20 +1,14 @@
-import type { NextConfig } from "next"
+// next.config.ts
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "thdcabwkvqqhenbbnqwm.supabase.co",
-      },
+      new URL(
+        "https://thdcabwkvqqhenbbnqwm.supabase.co/storage/v1/object/public/**",
+      ),
     ],
   },
-}
-
-export default nextConfig
-
-module.exports = {
-  images: {
-    qualities: [25, 50, 75, 90],
-  },
 };
+
+export default nextConfig;

@@ -3,7 +3,7 @@
 import { useActionState, useMemo, useState, useEffect } from "react";
 import { createBookingAction } from "@/listings/[id]/actions";
 import { emptyBookingFormState } from "@/lib/types";
-import type { MyListing } from "@/lib/types";
+import type { Listing } from "@/lib/types";
 import {
   calcHourlyTotal,
   HOURLY_BOOKING_MAX_HOURS,
@@ -11,7 +11,7 @@ import {
 } from "@/lib/billing";
 
 type BookingFormProps = {
-  listing: MyListing;
+  listing: Listing;
   isOwner: boolean;
   isLoggedIn: boolean;
 };

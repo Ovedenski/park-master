@@ -3,7 +3,7 @@
 import { useActionState, useMemo, useState, useEffect } from "react"
 import type {
   ListingFormState,
-  ListingFormValues,
+  Listing,
   PricingMode,
 } from "@/lib/types"
 import { LISTING_CATEGORIES } from "@/lib/types"
@@ -12,14 +12,14 @@ import AddressPicker from "@/components/listings/address-picker";
 type ListingFormProps = {
   action: (
     prevState: ListingFormState,
-    formData: FormData
-  ) => Promise<ListingFormState>
-  initialState: ListingFormState
-  submitLabel: string
-  listing?: ListingFormValues
-  currentImageUrl?: string | null
-  userEmail?: string | null
-}
+    formData: FormData,
+  ) => Promise<ListingFormState>;
+  initialState: ListingFormState;
+  submitLabel: string;
+  listing?: Partial<Listing>
+  currentImageUrl?: string | null;
+  userEmail?: string | null;
+};
 
 const DAYS = [
   { value: "monday", label: "Mon" },

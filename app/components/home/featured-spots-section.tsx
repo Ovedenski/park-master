@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
-import type { MyListing } from "@/lib/types";
+import type { Listing } from "@/lib/types";
 
-export function FeaturedSpotsSection({ listings }: { listings: MyListing[] }) {
+export function FeaturedSpotsSection({ listings }: { listings: Listing[] }) {
   if (listings.length === 0) return null;
 
   return (

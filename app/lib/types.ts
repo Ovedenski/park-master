@@ -1,43 +1,13 @@
-export interface Listing {
-  id: string
-  title: string
-  category: string
-  location: string
-  price: number
-  image: string
-}
+export type PricingMode = "hourly" | "monthly" | "both";
+export type ListingStatus = "draft" | "active" | "booked";
+export type ListingCategory = "residential" | "commercial" | "public";
 
-export type PricingMode = "hourly" | "monthly" | "both"
-export type ListingStatus = "draft" | "active" | "booked"
-
-export type ListingFormValues = {
-  id?: string;
-  host_id?: string;
-  title?: string;
-  description?: string | null;
-  category?: ListingCategory;
-  location?: string;
-  address?: string | null;
-  latitude?: number | string | null;
-  longitude?: number | string | null;
-  pricing_mode?: PricingMode;
-  price_per_hour?: number | null;
-  price_per_month?: number | null;
-  available_from?: string | null;
-  available_to?: string | null;
-  available_days?: string[];
-  image_path?: string | null;
-  status?: ListingStatus;
-  created_at?: string;
-  updated_at?: string;
-};
-
-export type MyListing = {
+export type Listing = {
   id: string;
   host_id: string;
   title: string;
   description: string | null;
-  category: string;
+  category: ListingCategory;
   address: string | null;
   city?: string | null;
   district?: string | null;
@@ -56,6 +26,21 @@ export type MyListing = {
   created_at: string;
   updated_at: string;
 };
+
+export type ListingCardData = Pick<
+  Listing,
+  | "id"
+  | "title"
+  | "category"
+  | "location"
+  | "city"
+  | "district"
+  | "price_per_hour"
+  | "price_per_month"
+  | "pricing_mode"
+  | "image_url"
+  | "status"
+>;
 
 export type ListingFormState = {
   success: boolean;
@@ -79,13 +64,15 @@ export type ListingFormState = {
   };
 };
 
-export type ListingCategory = "residential" | "commercial" | "public"
-
-export const LISTING_CATEGORIES: { value: ListingCategory; label: string; slug: string }[] = [
+export const LISTING_CATEGORIES: {
+  value: ListingCategory;
+  label: string;
+  slug: string;
+}[] = [
   { value: "residential", label: "Residential", slug: "residential" },
   { value: "commercial", label: "Commercial", slug: "commercial" },
   { value: "public", label: "Public", slug: "public" },
-]
+];
 
 // Booking form state for useActionState
 export type BookingFormValues = {

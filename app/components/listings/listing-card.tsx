@@ -1,8 +1,8 @@
 import Link from "next/link";
-import type {  MyListing } from "@/lib/types";
+import type { ListingCardData } from "@/lib/types";
 
 interface ListingCardProps {
-  listing: MyListing;
+  listing: ListingCardData;
 }
 
 export function ListingCard({ listing }: ListingCardProps) {

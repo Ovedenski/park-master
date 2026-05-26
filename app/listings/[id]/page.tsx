@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import { getAllListings } from "@/lib/data/listings";
 import { createClient } from "@/lib/supabase/server";
-import type { MyListing } from "@/lib/types";
+import type { Listing } from "@/lib/types";
 import BookingForm from "@/components/listings/booking-form";
 import ListingLocationMap from "@/components/listings/listing-location-map";
 
@@ -58,7 +58,7 @@ export default async function ListingPage({ params }: ListingPageProps) {
 
   const listings = await getAllListings();
 
-  const listingData: MyListing | undefined = listings.find(
+  const listingData: Listing | undefined = listings.find(
     (listing) => listing.id === id,
   );
 

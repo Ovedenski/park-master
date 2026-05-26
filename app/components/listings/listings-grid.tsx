@@ -1,9 +1,9 @@
 import { ListingCard } from "@/components/listings/listing-card";
-import type { Listing, MyListing } from "@/lib/types";
+import type { Listing } from "@/lib/types";
 
 
 interface ListingsGridProps {
-  listings: MyListing[];
+  listings: Listing[];
 }
 
 export default function ListingsGrid({ listings }: ListingsGridProps) {
