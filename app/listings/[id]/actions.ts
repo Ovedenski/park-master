@@ -1,4 +1,5 @@
 "use server";
+import { bookingFormSchema } from "@/lib/bookings/schema";
 
 import {
   HOURLY_BOOKING_MAX_HOURS,
@@ -75,16 +76,27 @@ export async function createBookingAction(
     return fail(values, {}, "This listing is not available.");
   }
 
-  // Validate fields
-  const fieldErrors: BookingFormFieldErrors = {};
+  // --- Zod validation (shape + required fields per mode) ---
+  const parsed = bookingFormSchema.safeParse(values);
 
-  if (!values.guest_name) {
-    fieldErrors.guest_name = "Please enter your name.";
+  if (!parsed.success) {
+    const fieldErrors: BookingFormFieldErrors = {};
+    for (const issue of parsed.error.issues) {
+      const key = issue.path[0];
+      if (
+        typeof key === "string" &&
+        !fieldErrors[key as keyof BookingFormFieldErrors]
+      ) {
+        fieldErrors[key as keyof BookingFormFieldErrors] = issue.message;
+      }
+    }
+    return fail(values, fieldErrors);
   }
 
-  if (values.booking_mode !== "hourly" && values.booking_mode !== "monthly") {
-    fieldErrors.booking_mode = "Please choose a booking mode.";
-  }
+  const data = parsed.data; // ← narrowed: hourly OR monthly, fields guaranteed
+
+  // --- Business-rule validation (needs DB / cross-field math) ---
+  const businessErrors: BookingFormFieldErrors = {};
 
   let checkIn = "";
   let checkOut = "";
@@ -92,60 +104,48 @@ export async function createBookingAction(
   let endAt: string | null = null;
   let total = 0;
 
-  if (values.booking_mode === "hourly") {
-    if (!values.date) fieldErrors.date = "Please pick a date.";
-    if (!values.start_time)
-      fieldErrors.start_time = "Please pick a start time.";
-    if (!values.end_time) fieldErrors.end_time = "Please pick an end time.";
+  if (data.booking_mode === "hourly") {
+    startAt = `${data.date}T${data.start_time}:00`;
+    const startDateObj = new Date(startAt);
 
-    if (values.date && values.start_time && values.end_time) {
-      startAt = `${values.date}T${values.start_time}:00`;
-      const startDateObj = new Date(startAt);
-
-      let endDateStr = values.date;
-      if (values.end_time <= values.start_time) {
-        const nextDay = new Date(startDateObj.getTime() + 24 * 60 * 60 * 1000);
-        endDateStr = nextDay.toISOString().slice(0, 10);
-      }
-      endAt = `${endDateStr}T${values.end_time}:00`;
-
-      const start = new Date(startAt);
-      const end = new Date(endAt);
-      const rawMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
-      const rawHours = rawMinutes / 60;
-
-      if (rawMinutes < HOURLY_BOOKING_MIN_MINUTES) {
-        fieldErrors.end_time = `Minimum booking is ${HOURLY_BOOKING_MIN_MINUTES} minutes.`;
-      } else if (rawHours > HOURLY_BOOKING_MAX_HOURS) {
-        fieldErrors.end_time = `Hourly bookings cannot exceed ${HOURLY_BOOKING_MAX_HOURS} hours.`;
-      } else {
-        checkIn = values.date;
-        checkOut = endDateStr;
-        total = calcHourlyTotal(rawHours, listing.price_per_hour).total;
-      }
+    let endDateStr = data.date;
+    if (data.end_time <= data.start_time) {
+      const nextDay = new Date(startDateObj.getTime() + 24 * 60 * 60 * 1000);
+      endDateStr = nextDay.toISOString().slice(0, 10);
     }
-  } else if (values.booking_mode === "monthly") {
-    if (!values.check_in) fieldErrors.check_in = "Please pick a check-in date.";
-    if (!values.check_out)
-      fieldErrors.check_out = "Please pick a check-out date.";
+    endAt = `${endDateStr}T${data.end_time}:00`;
 
-    if (values.check_in && values.check_out) {
-      const start = new Date(values.check_in);
-      const end = new Date(values.check_out);
-      const days = (end.getTime() - start.getTime()) / 1000 / 60 / 60 / 24;
+    const start = new Date(startAt);
+    const end = new Date(endAt);
+    const rawMinutes = (end.getTime() - start.getTime()) / 1000 / 60;
+    const rawHours = rawMinutes / 60;
 
-      if (days <= 0) {
-        fieldErrors.check_out = "Check-out must be after check-in.";
-      } else {
-        checkIn = values.check_in;
-        checkOut = values.check_out;
-        total = calcMonthlyTotal(days, listing.price_per_month).total;
-      }
+    if (rawMinutes < HOURLY_BOOKING_MIN_MINUTES) {
+      businessErrors.end_time = `Minimum booking is ${HOURLY_BOOKING_MIN_MINUTES} minutes.`;
+    } else if (rawHours > HOURLY_BOOKING_MAX_HOURS) {
+      businessErrors.end_time = `Hourly bookings cannot exceed ${HOURLY_BOOKING_MAX_HOURS} hours.`;
+    } else {
+      checkIn = data.date;
+      checkOut = endDateStr;
+      total = calcHourlyTotal(rawHours, listing.price_per_hour).total;
+    }
+  } else {
+    // monthly — narrowed by Zod, check_in / check_out are guaranteed present
+    const start = new Date(data.check_in);
+    const end = new Date(data.check_out);
+    const days = (end.getTime() - start.getTime()) / 1000 / 60 / 60 / 24;
+
+    if (days <= 0) {
+      businessErrors.check_out = "Check-out must be after check-in.";
+    } else {
+      checkIn = data.check_in;
+      checkOut = data.check_out;
+      total = calcMonthlyTotal(days, listing.price_per_month).total;
     }
   }
 
-  if (Object.keys(fieldErrors).length > 0) {
-    return fail(values, fieldErrors);
+  if (Object.keys(businessErrors).length > 0) {
+    return fail(values, businessErrors);
   }
 
   // Pre-check for overlapping bookings (friendly error before hitting DB)
@@ -182,10 +182,10 @@ export async function createBookingAction(
   const { error: bookingError } = await supabase.from("bookings").insert({
     user_id: user.id,
     listing_id: listingId,
-    guest_name: values.guest_name,
+    guest_name: data.guest_name,
     check_in: checkIn,
     check_out: checkOut,
-    booking_mode: values.booking_mode,
+    booking_mode: data.booking_mode,
     start_at: startAt,
     end_at: endAt,
     total,
