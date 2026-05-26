@@ -8,6 +8,8 @@ import StatCard from "@/components/account/stat-card"
 import { getMyListings } from "@/lib/data/listings"
 import { deleteListing } from "./actions"
 import DeleteListingButton from "@/components/account/delete-listing-button"
+import { formatPricePerUnit } from "@/lib/format";
+
 
 import type { Metadata } from "next";
 
@@ -18,29 +20,29 @@ export const metadata: Metadata = {
 };
 
 function formatPricing(listing: {
-  pricing_mode: "hourly" | "monthly" | "both"
-  price_per_hour: number | null
-  price_per_month: number | null
+  pricing_mode: "hourly" | "monthly" | "both";
+  price_per_hour: number | null;
+  price_per_month: number | null;
 }) {
   if (listing.pricing_mode === "hourly") {
-    return listing.price_per_hour != null ? `€${listing.price_per_hour}/hour` : "—"
+    return formatPricePerUnit(listing.price_per_hour, "hour");
   }
 
   if (listing.pricing_mode === "monthly") {
-    return listing.price_per_month != null ? `€${listing.price_per_month}/month` : "—"
+    return formatPricePerUnit(listing.price_per_month, "month");
   }
 
-  const parts: string[] = []
+  const parts: string[] = [];
 
   if (listing.price_per_hour != null) {
-    parts.push(`€${listing.price_per_hour}/hour`)
+    parts.push(formatPricePerUnit(listing.price_per_hour, "hour"));
   }
 
   if (listing.price_per_month != null) {
-    parts.push(`€${listing.price_per_month}/month`)
+    parts.push(formatPricePerUnit(listing.price_per_month, "month"));
   }
 
-  return parts.length ? parts.join(" · ") : "—"
+  return parts.length ? parts.join(" · ") : "—";
 }
 
 function formatAvailability(listing: {

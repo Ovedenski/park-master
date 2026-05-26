@@ -9,6 +9,7 @@ import {
   HOURLY_BOOKING_MAX_HOURS,
   HOURLY_BOOKING_MIN_MINUTES,
 } from "@/lib/billing";
+import { formatNumber, formatPrice, formatPricePerUnit } from "@/lib/format";
 
 type BookingFormProps = {
   listing: Listing;
@@ -237,14 +238,16 @@ export default function BookingForm({
                   <>
                     <p>
                       <span className="font-medium">Duration:</span>{" "}
-                      {hourlyPreview.hours.toFixed(2)} h
+                      {formatNumber(hourlyPreview.hours)} h
                       {Math.abs(
                         hourlyPreview.billedHours - hourlyPreview.hours,
                       ) > 0.001 && (
                         <span className="text-neutral-500">
                           {" "}
-                          (billed as {hourlyPreview.billedHours.toFixed(2)} h,
-                          rounded up to 15 min)
+                          (billed as {formatNumber(
+                            hourlyPreview.billedHours,
+                          )}{" "}
+                          h,
                         </span>
                       )}
                     </p>
@@ -254,7 +257,7 @@ export default function BookingForm({
                       </p>
                     )}
                     <p className="mt-1 font-medium">
-                      Total: ${hourlyPreview.total}
+                      Total: {formatPrice(hourlyPreview.total)}
                     </p>
                   </>
                 )}
@@ -262,7 +265,7 @@ export default function BookingForm({
             )}
 
             <p className="text-sm text-neutral-500">
-              ${listing.price_per_hour} per hour
+              {formatPricePerUnit(listing.price_per_hour, "hour")}
             </p>
           </div>
         )}
@@ -314,7 +317,7 @@ export default function BookingForm({
             </div>
 
             <p className="text-sm text-neutral-500">
-              ${listing.price_per_month} per month
+              {formatPricePerUnit(listing.price_per_month, "month")}
             </p>
           </div>
         )}

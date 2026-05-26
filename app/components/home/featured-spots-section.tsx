@@ -3,6 +3,8 @@ import { Container } from "@/components/layout/container";
 import { Button } from "@/components/ui/button";
 import { MapPin } from "lucide-react";
 import type { Listing } from "@/lib/types";
+import { formatPrice } from "@/lib/format";
+
 
 export function FeaturedSpotsSection({ listings }: { listings: Listing[] }) {
   if (listings.length === 0) return null;
@@ -51,21 +53,25 @@ export function FeaturedSpotsSection({ listings }: { listings: Listing[] }) {
                 <p className="mt-3 text-sm">
                   {listing.pricing_mode === "monthly" ||
                   listing.pricing_mode === "both" ? (
-                    <span className="font-semibold">
-                      ${listing.price_per_month}
+                    <>
+                      <span className="font-semibold">
+                        {formatPrice(listing.price_per_month)}
+                      </span>
                       <span className="font-normal text-muted-foreground">
                         {" "}
                         / month
                       </span>
-                    </span>
+                    </>
                   ) : (
-                    <span className="font-semibold">
-                      ${listing.price_per_hour}
+                    <>
+                      <span className="font-semibold">
+                        {formatPrice(listing.price_per_hour)}
+                      </span>
                       <span className="font-normal text-muted-foreground">
                         {" "}
                         / hour
                       </span>
-                    </span>
+                    </>
                   )}
                 </p>
               </div>

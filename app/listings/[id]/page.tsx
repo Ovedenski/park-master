@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import type { Listing } from "@/lib/types";
 import BookingForm from "@/components/listings/booking-form";
 import ListingLocationMap from "@/components/listings/listing-location-map";
+import { formatPricePerUnit } from "@/lib/format";
+
 
 import type { Metadata } from "next";
 
@@ -23,8 +25,8 @@ export async function generateMetadata({
 
   const priceLine =
     listing.pricing_mode === "monthly"
-      ? `$${listing.price_per_month}/month`
-      : `$${listing.price_per_hour}/hour`;
+      ? formatPricePerUnit(listing.price_per_month, "month")
+      : formatPricePerUnit(listing.price_per_hour, "hour");
 
   return {
     title: listing.title,
@@ -102,13 +104,13 @@ export default async function ListingPage({ params }: ListingPageProps) {
               <p className="text-sm text-neutral-500">Pricing</p>
               <p className="font-medium">
                 {listingData.pricing_mode === "hourly" &&
-                  `$${listingData.price_per_hour}/hour`}
+                  formatPricePerUnit(listingData.price_per_hour, "hour")}
 
                 {listingData.pricing_mode === "monthly" &&
-                  `$${listingData.price_per_month}/month`}
+                  formatPricePerUnit(listingData.price_per_month, "month")}
 
                 {listingData.pricing_mode === "both" &&
-                  `$${listingData.price_per_hour}/hour or $${listingData.price_per_month}/month`}
+                  `${formatPricePerUnit(listingData.price_per_hour, "hour")} or ${formatPricePerUnit(listingData.price_per_month, "month")}`}
               </p>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { formatPricePerUnit } from "@/lib/format";
 import type { ListingCardData } from "@/lib/types";
 
 interface ListingCardProps {
@@ -6,6 +7,10 @@ interface ListingCardProps {
 }
 
 export function ListingCard({ listing }: ListingCardProps) {
+  const isMonthly = listing.pricing_mode === "monthly";
+  const amount = isMonthly ? listing.price_per_month : listing.price_per_hour;
+  const unit = isMonthly ? "month" : "hour";
+
   return (
     <Link
       href={`/listings/${listing.id}`}
@@ -25,20 +30,7 @@ export function ListingCard({ listing }: ListingCardProps) {
         <p className="mt-1 text-sm text-muted-foreground">{listing.location}</p>
 
         <p className="mt-4 text-sm font-medium">
-          {listing.pricing_mode === "monthly" ? (
-            <>
-              €{listing.price_per_month}
-              <span className="font-normal text-muted-foreground">
-                {" "}
-                / month
-              </span>
-            </>
-          ) : (
-            <>
-              €{listing.price_per_hour}
-              <span className="font-normal text-muted-foreground"> / hour</span>
-            </>
-          )}
+          {formatPricePerUnit(amount, unit)}
         </p>
       </div>
     </Link>
