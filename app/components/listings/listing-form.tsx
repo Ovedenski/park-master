@@ -8,6 +8,10 @@ import type {
 } from "@/lib/types"
 import { LISTING_CATEGORIES } from "@/lib/types"
 import AddressPicker from "@/components/listings/address-picker";
+import {
+  ALLOWED_IMAGE_ACCEPT_ATTR,
+  MAX_IMAGE_LABEL,
+} from "@/lib/listings/image-validation";
 
 type ListingFormProps = {
   action: (
@@ -196,9 +200,19 @@ useEffect(() => {
             id="image"
             name="image"
             type="file"
-            accept="image/*"
+            accept={ALLOWED_IMAGE_ACCEPT_ATTR}
             className="w-full rounded-md border px-3 py-2"
+            aria-describedby="image-hint image-error"
+            aria-invalid={state.fieldErrors.image ? true : undefined}
           />
+          <p id="image-hint" className="text-xs text-muted-foreground">
+            JPEG, PNG, WebP or GIF · up to {MAX_IMAGE_LABEL}
+          </p>
+          {state.fieldErrors.image && (
+            <p id="image-error" className="text-sm text-destructive">
+              {state.fieldErrors.image}
+            </p>
+          )}
         </div>
       </section>
 

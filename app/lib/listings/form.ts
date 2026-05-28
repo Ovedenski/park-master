@@ -1,6 +1,7 @@
 import "server-only";
 import { listingFormSchema } from "@/lib/listings/schema";
 import type { ListingFormState } from "@/lib/types";
+import { validateImageFile } from "@/lib/listings/image-validation";
 
 /**
  * Read raw form values once, kept as strings so we can echo them back to the UI on error.
@@ -35,19 +36,29 @@ export function parseListingFormData(formData: FormData) {
   const rawValues = readRawValues(formData);
   const result = listingFormSchema.safeParse(rawValues);
 
-  if (!result.success) {
-    // Flatten Zod issues into the ListingFormState.fieldErrors shape: { [field]: "message" }
+  const imageFile = formData.get("image") as File | null;
+  const imageError = validateImageFile(imageFile);
+
+  if (!result.success || imageError) {
     const fieldErrors: ListingFormState["fieldErrors"] = {};
-    for (const issue of result.error.issues) {
-      const key = issue.path[0];
-      if (typeof key === "string" && !fieldErrors[key]) {
-        fieldErrors[key] = issue.message;
+
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        const key = issue.path[0];
+        if (typeof key === "string" && !fieldErrors[key]) {
+          fieldErrors[key] = issue.message;
+        }
       }
     }
+
+    if (imageError) {
+      fieldErrors.image = imageError;
+    }
+
     return {
       ok: false as const,
       fieldErrors,
-      values: rawValues, // echo back what user typed
+      values: rawValues,
     };
   }
 
@@ -75,7 +86,7 @@ export function parseListingFormData(formData: FormData) {
       available_days:
         data.pricing_mode === "monthly" ? [] : data.available_days,
       status: data.status,
-      image: formData.get("image") as File | null,
+      image: imageFile,
       removeImage: String(formData.get("remove_image") ?? "") === "on",
     },
     values: rawValues,

@@ -1,4 +1,5 @@
 import "server-only"
+import { validateImageFile } from "@/lib/listings/image-validation";
 
 const LISTING_IMAGES_BUCKET = "listings-images"
 
@@ -7,20 +8,18 @@ type UploadListingImageParams = {
   file: File
 }
 
-type ReplaceListingImageParams = {
-  supabase: Awaited<ReturnType<typeof import("@/lib/supabase/server").createClient>>
-  userId: string
-  file: File
-  currentImagePath: string | null
-}
-
 export async function uploadListingImage(
   supabase: Awaited<ReturnType<typeof import("@/lib/supabase/server").createClient>>,
   { userId, file }: UploadListingImageParams
 ) {
-  if (!file || file.size === 0) {
-    return null
-  }
+    if (!file || file.size === 0) {
+      return null;
+    }
+
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      throw new Error(validationError);
+    }
 
   const extension = file.name.split(".").pop()?.toLowerCase() || "jpg"
   const filePath = `${userId}/${crypto.randomUUID()}.${extension}`
@@ -53,20 +52,6 @@ export async function removeListingImage(
   if (error) {
     throw new Error(error.message)
   }
-}
-
-export async function replaceListingImage(
-  params: ReplaceListingImageParams
-) {
-  const { supabase, userId, file, currentImagePath } = params
-
-  const nextImagePath = await uploadListingImage(supabase, { userId, file })
-
-  if (currentImagePath) {
-    await removeListingImage(supabase, currentImagePath)
-  }
-
-  return nextImagePath
 }
 
 export function getListingImageUrl(
