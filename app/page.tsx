@@ -11,6 +11,7 @@ import { FeaturedSpotsSection } from "@/components/home/featured-spots-section";
 import { ValuePropsSection } from "@/components/home/value-props-section";
 import { HostCtaSection } from "@/components/home/host-cta-section";
 import { FaqSection } from "@/components/home/faq-section";
+import { ContactSection } from "./components/home/contact-section";
 
 export default async function HomePage() {
   const allListings = await getAllListings();
@@ -44,6 +45,7 @@ export default async function HomePage() {
           </div>
         </Container>
       </section>
+      <ContactSection />
     </main>
   );
 }
