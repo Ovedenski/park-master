@@ -10,6 +10,8 @@ import {
   getReservationsOnMyListings,
 } from "@/lib/data/bookings";
 import { cancelBooking } from "./actions";
+import { canGuestCancel } from "@/lib/bookings/cancellation";
+import { formatPrice } from "@/lib/format";
 
 import type { Metadata } from "next";
 
@@ -141,10 +143,16 @@ export default async function MyBookingsPage({
 
               <tbody>
                 {bookings.map((booking) => {
-                  const canCancel =
-                    activeView === "mine" &&
-                    (booking.status === "pending" ||
-                      (booking.status === "booked" && !booking.isPast));
+                  // Cancellation only applies to the guest view ("mine"). In
+                  // the host view, cancel/reject lives on the reservation
+                  // detail page.
+                  const cancellation =
+                    activeView === "mine"
+                      ? canGuestCancel({
+                          status: booking.status,
+                          check_in: booking.checkInISO,
+                        })
+                      : { allowed: false as const, reason: "" };
 
                   const boundCancelBooking = cancelBooking.bind(
                     null,
@@ -171,7 +179,7 @@ export default async function MyBookingsPage({
                       </td>
 
                       <td className="border-b border-neutral-200 px-4 py-4">
-                        €{booking.total}
+                        {formatPrice(booking.total)}
                       </td>
 
                       <td className="border-b border-neutral-200 px-4 py-4">
@@ -191,7 +199,7 @@ export default async function MyBookingsPage({
                             View
                           </Link>
 
-                          {canCancel ? (
+                          {cancellation.allowed ? (
                             <form action={boundCancelBooking}>
                               <button
                                 type="submit"

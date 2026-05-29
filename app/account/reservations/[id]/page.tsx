@@ -4,7 +4,13 @@ import PageHeader from "@/components/account/page-header";
 import SectionCard from "@/components/account/section-card";
 import StatusBadge from "@/components/account/status-badge";
 import { getReservationOnMyListingById } from "@/lib/data/bookings";
-import { approveReservation, rejectReservation } from "../actions";
+import {
+  approveReservation,
+  cancelReservation,
+  rejectReservation,
+} from "../actions";
+import { canHostCancel } from "@/lib/bookings/cancellation";
+import { formatPrice } from "@/lib/format";
 
 type ReservationDetailsPageProps = {
   params: Promise<{ id: string }>;
@@ -20,9 +26,23 @@ export default async function ReservationDetailsPage({
     notFound();
   }
 
+  // Approve / reject only apply while the booking is still pending.
   const canReview = reservation.status === "pending";
+
+  // Host-initiated cancellation of an already-approved reservation. The
+  // policy helper distinguishes "pending" (rejected via the buttons above)
+  // from "booked but not yet started" (cancellable here).
+  const hostCancellation = canHostCancel({
+    status: reservation.status,
+    check_in: reservation.checkInISO
+  });
+
+  const showCancelBookedAction =
+    reservation.status === "booked" && hostCancellation.allowed;
+
   const boundApproveReservation = approveReservation.bind(null, reservation.id);
   const boundRejectReservation = rejectReservation.bind(null, reservation.id);
+  const boundCancelReservation = cancelReservation.bind(null, reservation.id);
 
   return (
     <main className="space-y-8">
@@ -62,7 +82,7 @@ export default async function ReservationDetailsPage({
             <div className="rounded-2xl border border-border p-4">
               <dt className="text-sm text-muted-foreground">Total</dt>
               <dd className="mt-1 font-medium text-foreground">
-                €{reservation.total}
+                {formatPrice(reservation.total)}
               </dd>
             </div>
 
@@ -111,6 +131,22 @@ export default async function ReservationDetailsPage({
                   </button>
                 </form>
               </>
+            ) : null}
+
+            {showCancelBookedAction ? (
+              <form action={boundCancelReservation}>
+                <button
+                  type="submit"
+                  className="w-full rounded-full border border-red-200 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+                >
+                  Cancel reservation
+                </button>
+              </form>
+            ) : reservation.status === "booked" && !hostCancellation.allowed ? (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+                <p className="font-medium">Cancellation not available</p>
+                <p className="mt-1">{hostCancellation.reason}</p>
+              </div>
             ) : null}
 
             <Link

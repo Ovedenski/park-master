@@ -5,6 +5,7 @@ import SectionCard from "@/components/account/section-card"
 import StatusBadge from "@/components/account/status-badge"
 import { getMyBookingById } from "@/lib/data/bookings"
 import { cancelBooking } from "../actions"
+import { canGuestCancel } from "@/lib/bookings/cancellation";
 
 type BookingDetailsPageProps = {
   params: Promise<{ id: string }>
@@ -18,9 +19,10 @@ export default async function BookingDetailsPage({ params }: BookingDetailsPageP
     notFound()
   }
 
-  const canCancel =
-    booking.status === "pending" ||
-    (booking.status === "booked" && !booking.isPast)
+    const cancellation = canGuestCancel({
+      status: booking.status,
+      check_in: booking.checkInISO,
+    });
 
   const boundCancelBooking = cancelBooking.bind(null, booking.id)
 
@@ -40,7 +42,9 @@ export default async function BookingDetailsPage({ params }: BookingDetailsPageP
           <dl className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-border p-4">
               <dt className="text-sm text-muted-foreground">Listing</dt>
-              <dd className="mt-1 font-medium text-foreground">{booking.listingTitle}</dd>
+              <dd className="mt-1 font-medium text-foreground">
+                {booking.listingTitle}
+              </dd>
             </div>
 
             <div className="rounded-2xl border border-border p-4">
@@ -52,30 +56,35 @@ export default async function BookingDetailsPage({ params }: BookingDetailsPageP
 
             <div className="rounded-2xl border border-border p-4">
               <dt className="text-sm text-muted-foreground">Check-in</dt>
-              <dd className="mt-1 font-medium text-foreground">{booking.checkIn}</dd>
+              <dd className="mt-1 font-medium text-foreground">
+                {booking.checkIn}
+              </dd>
             </div>
 
             <div className="rounded-2xl border border-border p-4">
               <dt className="text-sm text-muted-foreground">Check-out</dt>
-              <dd className="mt-1 font-medium text-foreground">{booking.checkOut}</dd>
+              <dd className="mt-1 font-medium text-foreground">
+                {booking.checkOut}
+              </dd>
             </div>
 
             <div className="rounded-2xl border border-border p-4">
               <dt className="text-sm text-muted-foreground">Guest name</dt>
-              <dd className="mt-1 font-medium text-foreground">{booking.guestName}</dd>
+              <dd className="mt-1 font-medium text-foreground">
+                {booking.guestName}
+              </dd>
             </div>
 
             <div className="rounded-2xl border border-border p-4">
               <dt className="text-sm text-muted-foreground">Total</dt>
-              <dd className="mt-1 font-medium text-foreground">€{booking.total}</dd>
+              <dd className="mt-1 font-medium text-foreground">
+                €{booking.total}
+              </dd>
             </div>
           </dl>
         </SectionCard>
 
-        <SectionCard
-          title="Actions"
-          description="Manage this reservation."
-        >
+        <SectionCard title="Actions" description="Manage this reservation.">
           <div className="flex flex-col gap-3">
             <Link
               href={`/listings/${booking.listingId}`}
@@ -84,7 +93,7 @@ export default async function BookingDetailsPage({ params }: BookingDetailsPageP
               View listing
             </Link>
 
-            {canCancel ? (
+            {cancellation.allowed ? (
               <form action={boundCancelBooking}>
                 <button
                   type="submit"
@@ -93,6 +102,11 @@ export default async function BookingDetailsPage({ params }: BookingDetailsPageP
                   Cancel booking
                 </button>
               </form>
+            ) : booking.status !== "cancelled" ? (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+                <p className="font-medium">Cancellation not available</p>
+                <p className="mt-1">{cancellation.reason}</p>
+              </div>
             ) : null}
 
             <Link
@@ -105,5 +119,5 @@ export default async function BookingDetailsPage({ params }: BookingDetailsPageP
         </SectionCard>
       </section>
     </main>
-  )
+  );
 }

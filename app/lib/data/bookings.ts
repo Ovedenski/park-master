@@ -11,8 +11,10 @@ export type BookingListItem = {
   listingId: string;
   listingTitle: string;
   guestName: string;
-  checkIn: string;
-  checkOut: string;
+  checkIn: string; // formatted, for display
+  checkInISO: string; // raw ISO string, for date math   ← add
+  checkOut: string; // formatted, for display
+  checkOutISO: string; // raw ISO string, for date math   ← add
   bookingMode: BookingMode | null;
   startAt: string | null;
   endAt: string | null;
@@ -85,7 +87,9 @@ function mapBookingRow(booking: BookingRow): BookingListItem {
     listingTitle: getListingTitle(booking.listings),
     guestName: booking.guest_name,
     checkIn: formatDate(booking.check_in),
+    checkInISO: booking.check_in,
     checkOut: formatDate(booking.check_out),
+    checkOutISO: booking.check_out,
     bookingMode: booking.booking_mode,
     startAt: booking.start_at,
     endAt: booking.end_at,
